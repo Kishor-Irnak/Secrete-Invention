@@ -23,7 +23,7 @@ Noman Ahmed Kadiwal – AI/ML Developer
 
 Anmol Late – Backend Developer
 
-Sanika Chaughule - Full Stack Developer
+Sanika Choughule - Full Stack Developer
 
 Anushka Naik - Assistant Developer
 
