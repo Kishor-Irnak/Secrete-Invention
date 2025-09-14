@@ -26,39 +26,6 @@
     </script>
   </head>
   <body class="bg-white dark:bg-gray-800">
-    <!-- loader -->
-    <div id="loader">
-      <div class="spinner">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-    <script>
-      // Wait for the page to fully load
-      window.addEventListener("load", () => {
-        const loader = document.getElementById("loader");
-        const content = document.getElementById("content");
-
-        // Keep loader visible for 2 seconds (for testing)
-        setTimeout(() => {
-          // Fade-out effect (optional)
-          loader.style.opacity = "0";
-          loader.style.transition = "opacity 0.5s ease";
-
-          // After the fade, hide loader and show content
-          setTimeout(() => {
-            loader.style.display = "none";
-            content.style.display = "block";
-          }, 500); // Wait for fade animation to finish
-        }, 1500); // Show loader for 2 seconds
-      });
-    </script>
     <!-- sidebar -->
 
     <nav
@@ -386,6 +353,7 @@
     <div class="p-4 sm:ml-64">
       <div class="p-4 mt-14">
         <!-- Drag and Drop input blood report -->
+        <!-- Dropzone -->
         <div class="flex items-center justify-center w-full shadow-sm">
           <label
             for="dropzone-file"
@@ -415,19 +383,127 @@
                 PNG, JPG or PDF
               </p>
             </div>
-            <input id="dropzone-file" type="file" class="hidden" />
+            <input
+              id="dropzone-file"
+              type="file"
+              accept=".jpg,.jpeg,.png,.pdf"
+              class="hidden"
+            />
           </label>
         </div>
+
+        <!-- Upload Button -->
         <div
           class="flex items-center justify-center bg-white dark:bg-gray-800 mt-4"
         >
           <button
+            id="uploadBtn"
             type="button"
             class="text-white bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 dark:focus:ring-pink-800 shadow-lg shadow-pink-500/50 dark:shadow-lg dark:shadow-pink-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
           >
             Upload Report
           </button>
         </div>
+
+        <!-- Timeline & Progress -->
+        <div
+          id="timeline"
+          class="mt-6 hidden bg-white dark:bg-gray-800 p-4 rounded-lg shadow"
+        >
+          <div class="space-y-4">
+            <!-- Upload step -->
+            <div class="flex items-center space-x-2">
+              <div
+                id="uploadDot"
+                class="w-3 h-3 rounded-full bg-blue-500"
+              ></div>
+              <p class="text-gray-700 dark:text-gray-200 text-sm">
+                Uploading file...
+              </p>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3">
+              <div
+                id="progressBar"
+                class="bg-blue-500 h-3 rounded-full w-0"
+              ></div>
+            </div>
+
+            <!-- Processing step -->
+            <div class="flex items-center space-x-2">
+              <div
+                id="processingDot"
+                class="w-3 h-3 rounded-full bg-gray-400 dark:bg-gray-500"
+              ></div>
+              <p class="text-gray-700 dark:text-gray-200 text-sm">
+                Processing...
+              </p>
+            </div>
+
+            <!-- Uploaded step -->
+            <div class="flex items-center space-x-2">
+              <div
+                id="uploadedDot"
+                class="w-3 h-3 rounded-full bg-gray-400 dark:bg-gray-500"
+              ></div>
+              <p
+                id="uploadedText"
+                class="text-gray-700 dark:text-gray-200 text-sm"
+              >
+                Uploaded
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          const fileInput = document.getElementById("dropzone-file");
+          const uploadBtn = document.getElementById("uploadBtn");
+          const timeline = document.getElementById("timeline");
+          const progressBar = document.getElementById("progressBar");
+          const processingDot = document.getElementById("processingDot");
+          const uploadedDot = document.getElementById("uploadedDot");
+          const uploadedText = document.getElementById("uploadedText");
+
+          uploadBtn.addEventListener("click", () => {
+            if (fileInput.files.length > 0) {
+              timeline.classList.remove("hidden");
+              progressBar.style.width = "0%";
+
+              // Reset state
+              processingDot.className =
+                "w-3 h-3 rounded-full bg-gray-400 dark:bg-gray-500";
+              uploadedDot.className =
+                "w-3 h-3 rounded-full bg-gray-400 dark:bg-gray-500";
+              uploadedText.textContent = "Uploaded";
+
+              let progress = 0;
+              const interval = setInterval(() => {
+                if (progress >= 100) {
+                  clearInterval(interval);
+
+                  setTimeout(() => {
+                    processingDot.className =
+                      "w-3 h-3 rounded-full bg-green-500";
+
+                    setTimeout(() => {
+                      uploadedDot.className =
+                        "w-3 h-3 rounded-full bg-green-500";
+                      uploadedText.textContent = "Uploaded ✅";
+                    }, 1000);
+                  }, 1000);
+                } else {
+                  progress += 5;
+                  progressBar.style.width = progress + "%";
+                }
+              }, 200);
+            } else {
+              alert("Please select a file first!");
+            }
+          });
+        </script>
+
         <!--Blog Post-->
         <div class="grid lg:grid-cols-2 gap-2">
           <a
