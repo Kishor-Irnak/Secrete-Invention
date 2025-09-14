@@ -1,1142 +1,750 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Health Analyzer</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantum Coder | AI Disease Prediction</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      scroll-behavior: smooth;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+    
+    .hero-pattern {
+      background: radial-gradient(circle at 10% 20%, rgba(244, 114, 182, 0.1) 0%, transparent 20%),
+                  radial-gradient(circle at 80% 10%, rgba(244, 114, 182, 0.1) 0%, transparent 25%);
+    }
+    
+    .feature-card, .team-card {
+      transition: all 0.3s ease;
+      border: 1px solid rgba(244, 114, 182, 0.1);
+    }
+    
+    .feature-card:hover, .team-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(244, 114, 182, 0.25);
+      border-color: rgba(244, 114, 182, 0.3);
+    }
+    
+    .demo-container {
+      background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+      border: 1px solid rgba(244, 114, 182, 0.1);
+    }
+    
+    .symptom-pill {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .symptom-pill.active {
+      background-color: #db2777;
+      color: white;
+    }
+    
+    .prediction-circle {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: conic-gradient(#db2777 0%, #1f2937 0%);
+      transition: all 1s ease;
+    }
+    
+    .prediction-circle::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      background: #111827;
+      border-radius: 50%;
+    }
+    
+    .circle-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 10;
+    }
+    
+    .typewriter {
+      overflow: hidden;
+      border-right: 2px solid #db2777;
+      white-space: nowrap;
+      margin: 0 auto;
+      animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+    
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: #db2777 }
+    }
+    
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(219, 39, 119, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(219, 39, 119, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(219, 39, 119, 0); }
+    }
+    
+    /* Smooth scrolling for all browsers */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Improved transitions */
+    .smooth-transition {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Tab styling */
+    .tab-button {
+      transition: all 0.3s ease;
+    }
+    
+    .tab-button.active {
+      background-color: #db2777;
+      color: white;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    /* Video container */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 0.75rem;
+    }
+    
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    
+    /* GitHub card styling */
+    .github-card {
+      transition: all 0.3s ease;
+    }
+    
+    .github-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(244, 114, 182, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-gray-950 text-white">
 
-    <!-- Flwobite CDN -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css"
-      rel="stylesheet"
-    />
-
-    <!-- Dark Theme Script -->
-    <script>
-      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-      if (
-        localStorage.getItem("color-theme") === "dark" ||
-        (!("color-theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      ) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    </script>
-  </head>
-  <body class="bg-white dark:bg-gray-800">
-    <!-- loader -->
-    <div id="loader">
-      <div class="spinner">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+  <!-- Navbar -->
+  <header class="fixed w-full z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between py-4">
+      <div class="flex items-center">
+        <h1 class="text-2xl font-bold text-pink-500 flex items-center">
+          <i class="ph-brain text-pink-500 mr-2"></i>Quantum Coder
+        </h1>
+      </div>
+      <nav class="hidden md:flex space-x-8">
+        <a href="#features" class="hover:text-pink-400 transition-colors">Features</a>
+        <a href="#how" class="hover:text-pink-400 transition-colors">How It Works</a>
+        <a href="#demo" class="hover:text-pink-400 transition-colors">Demo</a>
+        <a href="#team" class="hover:text-pink-400 transition-colors">Team</a>
+        <a href="#faq" class="hover:text-pink-400 transition-colors">FAQ</a>
+        <a href="#contact" class="hover:text-pink-400 transition-colors">Contact</a>
+      </nav>
+      <button class="md:hidden text-gray-400" id="mobileMenuButton">
+        <i class="ph-list text-2xl"></i>
+      </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="hidden md:hidden bg-gray-900 border-t border-gray-800" id="mobileMenu">
+      <div class="px-6 py-4 space-y-4">
+        <a href="#features" class="block hover:text-pink-400 transition-colors">Features</a>
+        <a href="#how" class="block hover:text-pink-400 transition-colors">How It Works</a>
+        <a href="#demo" class="block hover:text-pink-400 transition-colors">Demo</a>
+        <a href="#team" class="block hover:text-pink-400 transition-colors">Team</a>
+        <a href="#faq" class="block hover:text-pink-400 transition-colors">FAQ</a>
+        <a href="#contact" class="block hover:text-pink-400 transition-colors">Contact</a>
       </div>
     </div>
-    <script>
-      // Wait for the page to fully load
-      window.addEventListener("load", () => {
-        const loader = document.getElementById("loader");
-        const content = document.getElementById("content");
+  </header>
 
-        // Keep loader visible for 2 seconds (for testing)
-        setTimeout(() => {
-          // Fade-out effect (optional)
-          loader.style.opacity = "0";
-          loader.style.transition = "opacity 0.5s ease";
+  <!-- Hero Section -->
+  <section class="pt-32 pb-20 text-center relative overflow-hidden gradient-bg hero-pattern">
+    <div class="absolute inset-0 bg-gradient-to-b from-pink-500/10 via-transparent to-transparent pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-5xl md:text-6xl font-extrabold mb-6">AI-Powered <span class="text-pink-500">Disease Prediction</span></h2>
+      <p class="max-w-2xl mx-auto text-gray-400 mb-8 text-lg">Revolutionizing healthcare with machine learning algorithms that predict diseases early and accurately.</p>
+      <div class="space-x-4">
+        <a href="#demo" class="px-6 py-3 bg-pink-600 hover:bg-pink-500 rounded-xl font-medium transition-colors pulse">Live Demo</a>
+        <a href="#features" class="px-6 py-3 border border-pink-500 hover:bg-pink-600 rounded-xl font-medium transition-colors">Explore Features</a>
+      </div>
+    </div>
+    <div class="mt-16 floating">
+      <i class="ph-arrow-down text-4xl text-pink-500"></i>
+    </div>
+  </section>
 
-          // After the fade, hide loader and show content
-          setTimeout(() => {
-            loader.style.display = "none";
-            content.style.display = "block";
-          }, 500); // Wait for fade animation to finish
-        }, 1500); // Show loader for 2 seconds
-      });
-    </script>
-    <!-- sidebar -->
+  <!-- Features -->
+  <section id="features" class="py-20 max-w-6xl mx-auto px-6">
+    <h3 class="text-3xl font-bold text-center mb-4">Core Features</h3>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-14">Our AI disease prediction system combines cutting-edge technology with user-friendly design</p>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="feature-card bg-gray-900 p-6 rounded-2xl">
+        <i class="ph-brain text-pink-500 text-4xl mb-4"></i>
+        <h4 class="text-xl font-semibold mb-2">AI Intelligence</h4>
+        <p class="text-gray-400">Advanced machine learning algorithms analyze symptoms and predict diseases with high accuracy.</p>
+      </div>
+      <div class="feature-card bg-gray-900 p-6 rounded-2xl">
+        <i class="ph-device-mobile text-pink-500 text-4xl mb-4"></i>
+        <h4 class="text-xl font-semibold mb-2">Responsive Design</h4>
+        <p class="text-gray-400">Seamless experience across all devices with a modern, intuitive interface.</p>
+      </div>
+      <div class="feature-card bg-gray-900 p-6 rounded-2xl">
+        <i class="ph-shield-check text-pink-500 text-4xl mb-4"></i>
+        <h4 class="text-xl font-semibold mb-2">Data Security</h4>
+        <p class="text-gray-400">End-to-end encryption ensures your health data remains private and secure.</p>
+      </div>
+      <div class="feature-card bg-gray-900 p-6 rounded-2xl">
+        <i class="ph-gauge text-pink-500 text-4xl mb-4"></i>
+        <h4 class="text-xl font-semibold mb-2">Real-time Analysis</h4>
+        <p class="text-gray-400">Instant results with our optimized processing pipeline and cloud infrastructure.</p>
+      </div>
+      <div class="feature-card bg-gray-900 p-6 rounded-2xl">
+        <i class="ph-user-circle text-pink-500 text-4xl mb-4"></i>
+        <h4 class="text-xl font-semibold mb-2">Personalized Reports</h4>
+        <p class="text-gray-400">Customized health insights and recommendations based on your unique profile.</p>
+      </div>
+      <div class="feature-card bg-gray-900 p-6 rounded-2xl">
+        <i class="ph-trend-up text-pink-500 text-4xl mb-4"></i>
+        <h4 class="text-xl font-semibold mb-2">Health Tracking</h4>
+        <p class="text-gray-400">Monitor your health trends over time with detailed analytics and visualizations.</p>
+      </div>
+    </div>
+  </section>
 
-    <nav
-      class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
-    >
-      <div class="px-3 py-3 lg:px-5 lg:pl-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center justify-start rtl:justify-end">
-            <button
-              data-drawer-target="logo-sidebar"
-              data-drawer-toggle="logo-sidebar"
-              aria-controls="logo-sidebar"
-              type="button"
-              class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            >
-              <span class="sr-only">Open sidebar</span>
-              <svg
-                class="w-6 h-6"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  clip-rule="evenodd"
-                  fill-rule="evenodd"
-                  d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-                ></path>
-              </svg>
+  <!-- How It Works -->
+  <section id="how" class="py-20 bg-gray-900/40">
+    <h3 class="text-3xl font-bold text-center mb-4">How It Works</h3>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-14">Our three-step process makes disease prediction simple and accessible</p>
+    <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-3 gap-10 text-center">
+      <div class="floating">
+        <div class="text-5xl mb-4 text-pink-500 bg-gray-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto">1</div>
+        <h4 class="text-xl font-semibold mb-2">Input Symptoms</h4>
+        <p class="text-gray-400">Enter your symptoms through our intuitive interface or connect health monitoring devices.</p>
+      </div>
+      <div class="floating" style="animation-delay: 0.5s;">
+        <div class="text-5xl mb-4 text-pink-500 bg-gray-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto">2</div>
+        <h4 class="text-xl font-semibold mb-2">AI Analysis</h4>
+        <p class="text-gray-400">Our algorithms process your data against millions of data points to identify patterns.</p>
+      </div>
+      <div class="floating" style="animation-delay: 1s;">
+        <div class="text-5xl mb-4 text-pink-500 bg-gray-800 w-20 h-20 rounded-full flex items-center justify-center mx-auto">3</div>
+        <h4 class="text-xl font-semibold mb-2">Get Results</h4>
+        <p class="text-gray-400">Receive detailed predictions, risk assessments, and recommended next steps.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section id="demo" class="py-20 max-w-6xl mx-auto px-6">
+    <h3 class="text-3xl font-bold text-center mb-4">Interactive Demo</h3>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-14">Try our symptom checker to see how our AI prediction works</p>
+    
+    <!-- Demo Tabs -->
+    <div class="flex space-x-2 mb-6 justify-center">
+      <button class="tab-button px-4 py-2 rounded-lg bg-gray-800 active" data-tab="symptom-checker">Symptom Checker</button>
+      <button class="tab-button px-4 py-2 rounded-lg bg-gray-800" data-tab="video-demo">Video Demo</button>
+      <button class="tab-button px-4 py-2 rounded-lg bg-gray-800" data-tab="github">GitHub Repository</button>
+    </div>
+    
+    <!-- Symptom Checker Tab -->
+    <div class="tab-content active" id="symptom-checker">
+      <div class="demo-container rounded-2xl p-8">
+        <div class="flex flex-col md:flex-row items-center gap-10">
+          <div class="flex-1 flex flex-col items-center">
+            <div class="prediction-circle mb-6" id="predictionCircle">
+              <div class="circle-text">
+                <span class="text-3xl font-bold text-white" id="probabilityText">0%</span>
+                <div class="text-pink-500 text-sm mt-1" id="diseaseText">Select Symptoms</div>
+              </div>
+            </div>
+            <div class="text-center">
+              <h4 class="text-xl font-semibold mb-2">Prediction Results</h4>
+              <p class="text-gray-400 text-sm">Our AI will analyze your symptoms and provide a risk assessment</p>
+            </div>
+          </div>
+          
+          <div class="flex-1">
+            <h4 class="text-xl font-semibold mb-4">Select Your Symptoms</h4>
+            <div class="symptom-selector grid grid-cols-2 gap-3 mb-6">
+              <div class="symptom-pill bg-gray-800 p-3 rounded-lg text-center" data-symptom="fever">Fever</div>
+              <div class="symptom-pill bg-gray-800 p-3 rounded-lg text-center" data-symptom="cough">Cough</div>
+              <div class="symptom-pill bg-gray-800 p-3 rounded-lg text-center" data-symptom="headache">Headache</div>
+              <div class="symptom-pill bg-gray-800 p-3 rounded-lg text-center" data-symptom="fatigue">Fatigue</div>
+              <div class="symptom-pill bg-gray-800 p-3 rounded-lg text-center" data-symptom="breathing">Breathing Issues</div>
+              <div class="symptom-pill bg-gray-800 p-3 rounded-lg text-center" data-symptom="chest">Chest Pain</div>
+            </div>
+            
+            <button id="predictBtn" class="w-full py-3 bg-pink-600 hover:bg-pink-500 rounded-xl font-medium transition-colors">
+              Analyze Symptoms
             </button>
-            <a href="https://flowbite.com" class="flex ms-2 md:me-24">
-              <span
-                class="text-white flex bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 dark:focus:ring-pink-800 shadow-lg shadow-pink-500/50 dark:shadow-lg dark:shadow-pink-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-              >
-                <svg
-                  class="w-6 h-6 text-white dark:text-white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15.041 13.862A4.999 4.999 0 0 1 17 17.831V21M7 3v3.169a5 5 0 0 0 1.891 3.916M17 3v3.169a5 5 0 0 1-2.428 4.288l-5.144 3.086A5 5 0 0 0 7 17.831V21M7 5h10M7.399 8h9.252M8 16h8.652M7 19h10"
-                  />
-                </svg>
-
-                Health Analyzer</span
-              >
-            </a>
-          </div>
-          <div class="flex items-center">
-            <div class="flex items-center ms-3">
-              <button
-                id="theme-toggle"
-                type="button"
-                class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
-              >
-                <svg
-                  id="theme-toggle-dark-icon"
-                  class="hidden w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-                  ></path>
-                </svg>
-                <svg
-                  id="theme-toggle-light-icon"
-                  class="hidden w-5 h-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                  ></path>
-                </svg>
-              </button>
-              <div>
-                <button
-                  type="button"
-                  class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                  aria-expanded="false"
-                  data-dropdown-toggle="dropdown-user"
-                >
-                  <span class="sr-only">Open user menu</span>
-                  <img
-                    class="w-8 h-8 rounded-full"
-                    src="https://i.postimg.cc/KYD7Pcpb/unnamed.jpg"
-                    alt="user photo"
-                  />
-                </button>
-              </div>
-              <div
-                class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600"
-                id="dropdown-user"
-              >
-                <div class="px-4 py-3" role="none">
-                  <p class="text-sm text-gray-900 dark:text-white" role="none">
-                    Neil Sims
-                  </p>
-                  <p
-                    class="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
-                    role="none"
-                  >
-                    neil.sims@flowbite.com
-                  </p>
-                </div>
-                <ul class="py-1" role="none">
-                  <li>
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                      role="menuitem"
-                      >Dashboard</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                      role="menuitem"
-                      >Settings</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                      role="menuitem"
-                      >Earnings</a
-                    >
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                      role="menuitem"
-                      >Sign out</a
-                    >
-                  </li>
-                </ul>
-              </div>
+            
+            <div class="mt-6 p-4 bg-gray-800 rounded-xl hidden" id="recommendationBox">
+              <h5 class="font-semibold mb-2 text-pink-400">Recommendations</h5>
+              <p class="text-sm text-gray-400" id="recommendationText">Based on your symptoms, we recommend consulting a healthcare professional.</p>
             </div>
           </div>
         </div>
       </div>
-    </nav>
-
-    <aside
-      id="logo-sidebar"
-      class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
-      aria-label="Sidebar"
-    >
-      <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
-        <ul class="space-y-2 font-medium">
-          <li>
-            <a
-              href="#"
-              class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <svg
-                class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 22 21"
-              >
-                <path
-                  d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"
-                />
-                <path
-                  d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"
-                />
-              </svg>
-              <span class="ms-3">Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <svg
-                class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 18 18"
-              >
-                <path
-                  d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"
-                />
-              </svg>
-              <span class="flex-1 ms-3 whitespace-nowrap">Report</span>
-              <span
-                class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-pink-100 rounded-full dark:bg-pink-100 dark:text-gray-800"
-                >1</span
-              >
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <svg
-                class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"
-                />
-              </svg>
-              <span class="flex-1 ms-3 whitespace-nowrap">Inbox</span>
-              <span
-                class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-pink-100 rounded-full dark:bg-pink-100 dark:text-gray-800"
-                >3</span
-              >
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <svg
-                class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 18"
-              >
-                <path
-                  d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"
-                />
-              </svg>
-              <span class="flex-1 ms-3 whitespace-nowrap">Users</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <svg
-                class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 18 20"
-              >
-                <path
-                  d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z"
-                />
-              </svg>
-              <span class="flex-1 ms-3 whitespace-nowrap">Products</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <svg
-                class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 18 16"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"
-                />
-              </svg>
-              <span class="flex-1 ms-3 whitespace-nowrap">Sign In</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-            >
-              <svg
-                class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z"
-                />
-                <path
-                  d="M6.737 11.061a2.961 2.961 0 0 1 .81-1.515l6.117-6.116A4.839 4.839 0 0 1 16 2.141V2a1.97 1.97 0 0 0-1.933-2H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h12.134A1.97 1.97 0 0 0 16 18v-3.093l-1.546 1.546c-.413.413-.94.695-1.513.81l-3.4.679a2.947 2.947 0 0 1-1.85-.227 2.96 2.96 0 0 1-1.635-3.257l.681-3.397Z"
-                />
-                <path
-                  d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"
-                />
-              </svg>
-              <span class="flex-1 ms-3 whitespace-nowrap">Sign Up</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </aside>
-
-    <div class="p-4 sm:ml-64">
-      <div class="p-4 mt-14">
-        <!-- Drag and Drop input blood report -->
-        <div class="flex items-center justify-center w-full shadow-sm">
-          <label
-            for="dropzone-file"
-            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-          >
-            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-              <svg
-                class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 16"
-              >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                />
-              </svg>
-              <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                <span class="font-semibold">Click to upload</span> or drag and
-                drop
-              </p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                PNG, JPG or PDF
-              </p>
-            </div>
-            <input id="dropzone-file" type="file" class="hidden" />
-          </label>
+    </div>
+    
+    <!-- Video Demo Tab -->
+    <div class="tab-content" id="video-demo">
+      <div class="demo-container rounded-2xl p-8">
+        <h4 class="text-xl font-semibold mb-4 text-center">Project Demonstration Video</h4>
+        <p class="text-gray-400 text-center mb-6">Watch our video to see the full functionality of our AI disease prediction system</p>
+        
+        <div class="video-container">
+          <!-- Replace with your actual YouTube video ID -->
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Quantum Coder Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <div
-          class="flex items-center justify-center bg-white dark:bg-gray-800 mt-4"
-        >
-          <button
-            type="button"
-            class="text-white bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-pink-300 dark:focus:ring-pink-800 shadow-lg shadow-pink-500/50 dark:shadow-lg dark:shadow-pink-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          >
-            Upload Report
-          </button>
-        </div>
-        <!--Blog Post-->
-        <div class="grid lg:grid-cols-2 gap-2">
-          <a
-            href="#"
-            class="my-4 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 3000 3000"
-              id="BusinessReport"
-            >
-              <path
-                fill="#ff6699"
-                d="M2352.54 884.967C2254.39 852.306 2145.32 710.776 2103.06 644.094 2009 521.441 2131.69 488.955 2242.12 595.103 2352.54 701.25 2352.54 644.094 2442.52 742.076 2532.5 840.059 2475.24 925.793 2352.54 884.967ZM192.335 1759.98C29.363 2004 95.4786 2236.8 189.568 2397.01 265.142 2525.68 415.733 2580.58 565.16 2580.58H1941.75C2233.1 2580.58 2521.48 2371.09 2630.44 2101.36 2715.38 1891.09 2781.5 1658.5 2694.13 1433.91 2530.54 1013.4 2289.24 1090.97 1982.5 727.618 1675.76 364.267 1353.02 451.962 849.609 650.049 135.077 931.208 503.163 1294.56 192.335 1759.98Z"
-                class="colore7e8ff svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                d="M501.289 545.138C501.289 476.129 557.056 420.186 625.848 420.186H1556.38C1625.17 420.186 1680.94 476.129 1680.94 545.138V2440.1C1680.94 2509.11 1625.17 2565.05 1556.38 2565.05H625.848C557.056 2565.05 501.289 2509.11 501.289 2440.1V545.138Z"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M493.962 545.138C493.962 472.069 553.009 412.835 625.848 412.835H1556.38C1629.22 412.835 1688.27 472.069 1688.27 545.138V2440.1C1688.27 2513.16 1629.22 2572.4 1556.38 2572.4H625.848C553.009 2572.4 493.962 2513.16 493.962 2440.1V545.138ZM625.848 427.536C561.103 427.536 508.616 480.188 508.616 545.138V2440.1C508.616 2505.05 561.103 2557.7 625.848 2557.7H1556.38C1621.13 2557.7 1673.61 2505.05 1673.61 2440.1V545.138C1673.61 480.188 1621.13 427.536 1556.38 427.536H625.848Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                d="M849.539 2203.55C849.539 2183.25 865.941 2166.8 886.174 2166.8H1306.93C1327.17 2166.8 1343.57 2183.25 1343.57 2203.55V2235.66C1343.57 2255.96 1327.17 2272.41 1306.93 2272.41H886.174C865.941 2272.41 849.539 2255.96 849.539 2235.66V2203.55Z"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M756.596 1988.06C736.363 1988.06 719.96 1971.61 719.96 1951.31L719.96 1821.7C719.96 1801.4 736.363 1784.95 756.596 1784.95L788.61 1784.95C808.843 1784.95 825.245 1801.4 825.245 1821.7L825.245 1951.31C825.245 1971.61 808.843 1988.06 788.61 1988.06L756.596 1988.06ZM967.16 1988.06C946.927 1988.06 930.525 1971.61 930.525 1951.31L930.525 1740.46C930.525 1720.16 946.927 1703.71 967.16 1703.71L999.175 1703.71C1019.41 1703.71 1035.81 1720.16 1035.81 1740.46L1035.81 1951.31C1035.81 1971.61 1019.41 1988.06 999.175 1988.06L967.16 1988.06ZM1177.73 1988.06C1157.5 1988.06 1141.1 1971.61 1141.1 1951.31L1141.1 1675.46C1141.1 1655.16 1157.5 1638.71 1177.73 1638.71L1209.75 1638.71C1229.98 1638.71 1246.38 1655.16 1246.38 1675.46L1246.38 1951.31C1246.38 1971.61 1229.98 1988.06 1209.75 1988.06L1177.73 1988.06ZM1388.3 1988.06C1368.07 1988.06 1351.67 1971.61 1351.67 1951.31L1351.67 1821.7C1351.67 1801.4 1368.07 1784.95 1388.3 1784.95L1420.32 1784.95C1440.55 1784.95 1456.95 1801.4 1456.95 1821.7L1456.95 1951.31C1456.95 1971.61 1440.55 1988.06 1420.32 1988.06L1388.3 1988.06Z"
-                class="colore7e8ff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                d="M848.339 476.645L818.32 420.181H1363.91L1327.43 481.163C1308.9 512.158 1275.51 531.122 1239.47 531.122H938.849C900.966 531.122 866.167 510.177 848.339 476.645Z"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                d="M1651.45 464.559H530.78C569.119 426.1 605.737 418.95 619.254 420.183H1562.97C1610.16 420.183 1641.62 449.767 1651.45 464.559ZM1651.45 2520.67H530.78C569.119 2559.13 605.737 2566.28 619.254 2565.05H1562.97C1610.16 2565.05 1641.62 2535.46 1651.45 2520.67Z"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                fill-rule="evenodd"
-                d="M1260.47 1004.24H711.86V989.537H1260.47V1004.24Z"
-                clip-rule="evenodd"
-                class="colore7e8ff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M717.486 1154.97C717.486 1130.61 737.169 1110.87 761.448 1110.87H1327.5C1351.78 1110.87 1371.47 1130.61 1371.47 1154.97V1393.47C1371.47 1417.83 1351.78 1437.57 1327.5 1437.57H761.448C737.169 1437.57 717.486 1417.83 717.486 1393.47V1154.97ZM761.448 1125.57C745.262 1125.57 732.14 1138.73 732.14 1154.97V1393.47C732.14 1409.71 745.262 1422.87 761.448 1422.87H1327.5C1343.69 1422.87 1356.81 1409.71 1356.81 1393.47V1154.97C1356.81 1138.73 1343.69 1125.57 1327.5 1125.57H761.448Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M945.289 1187.38C939.412 1178.08 925.81 1178.32 920.267 1187.82L841.178 1323.36C835.92 1332.37 826.293 1337.91 815.885 1337.91H724.813V1323.21H815.885C821.089 1323.21 825.902 1320.44 828.531 1315.93L907.62 1180.4C918.707 1161.4 945.911 1160.91 957.664 1179.5L1034.1 1300.42C1039.5 1308.96 1051.69 1309.6 1057.96 1301.68L1122.36 1220.21C1133.44 1206.21 1154.3 1205.27 1166.57 1218.23L1224.72 1279.63C1227.49 1282.55 1231.33 1284.21 1235.34 1284.21H1359.82V1298.91H1235.34C1227.31 1298.91 1219.63 1295.6 1214.09 1289.76L1155.95 1228.36C1149.81 1221.88 1139.38 1222.34 1133.84 1229.35L1069.44 1310.81C1056.9 1326.67 1032.53 1325.38 1021.72 1308.29L945.289 1187.38Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                fill-rule="evenodd"
-                d="M1473.15 882.372H711.86V867.672H1473.15V882.372Z"
-                clip-rule="evenodd"
-                class="colore7e8ff svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                d="M235.607 2093.33C170.231 2220.09 277.721 2451.98 345.438 2562.25C349.542 2568.93 356.833 2572.91 364.653 2572.91H468.435C482.362 2572.91 493.044 2560.28 490.905 2546.47C424.038 2114.35 258.448 2056.06 235.607 2093.33Z"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M242.238 2097.15C211.226 2157.62 220.867 2244.51 247.905 2331.7C274.832 2418.53 318.32 2503.48 351.938 2558.22C354.615 2562.58 359.411 2565.24 364.652 2565.24H468.435C477.635 2565.24 484.783 2556.86 483.358 2547.64C450.04 2332.34 392.27 2211.24 340.858 2148.77C315.126 2117.5 291.274 2101.25 273.199 2094.88C254.663 2088.34 245.145 2092.73 242.238 2097.15ZM352.634 2139C406.444 2204.38 464.902 2328.48 498.452 2545.29C501.304 2563.72 487.089 2580.58 468.435 2580.58H364.652C354.255 2580.58 344.468 2575.28 338.936 2566.27C304.839 2510.75 260.723 2424.62 233.32 2336.26C206.071 2248.38 194.642 2156.08 228.825 2089.81L228.954 2089.55L229.102 2089.31C237.775 2075.16 257.515 2073.09 278.261 2080.41C299.748 2087.99 325.754 2106.33 352.634 2139Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                d="M432.068 1848.6C284.429 1934.86 352.313 2343.44 408.674 2553.25C411.348 2563.21 420.355 2569.99 430.623 2569.99H507.825C518.852 2569.99 528.341 2562.03 530.28 2551.13C603.234 2140.98 543.318 1810.97 435.42 1847.07C434.275 1847.45 433.111 1847.99 432.068 1848.6Z"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                d="M788.954 2119.65C634.051 2130.6 509.623 2390.28 457.758 2543.32C452.794 2557.96 463.795 2572.91 479.202 2572.91H562.89C567.847 2572.91 572.654 2571.33 576.573 2568.28C759.672 2425.79 884.019 2119.65 788.954 2119.65Z"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M789.213 2127.32C752.669 2129.98 717.404 2147.3 683.998 2174.87 650.511 2202.51 619.293 2240.13 591.063 2282.47 534.6 2367.15 490.787 2469.67 464.988 2545.79 461.767 2555.29 468.85 2565.24 479.201 2565.24H562.889C566.229 2565.24 569.373 2564.18 571.894 2562.22 662.223 2491.93 738.393 2380.89 780.104 2287.4 800.994 2240.57 812.894 2198.91 813.99 2169.43 814.541 2154.62 812.321 2143.9 808.14 2137.12 804.345 2130.98 798.531 2127.39 789.213 2127.32ZM794.045 2293.67C751.574 2388.87 674.021 2502.15 581.251 2574.34 575.935 2578.48 569.465 2580.58 562.889 2580.58H479.201C458.739 2580.58 443.821 2560.64 450.527 2540.85 476.593 2463.94 520.927 2360.09 578.37 2273.94 607.093 2230.86 639.268 2191.94 674.298 2163.02 709.325 2134.11 747.608 2114.89 788.417 2112L788.685 2111.98H788.953C803.25 2111.98 814.273 2117.95 821.123 2129.04 827.623 2139.57 829.854 2153.88 829.255 2170 828.051 2202.37 815.246 2246.15 794.045 2293.67ZM288.616 2153.5C307.207 2182.35 328.033 2229.97 348.375 2283.6 361.589 2318.44 374.686 2356.05 386.927 2393.12L405.99 2333.69 420.53 2338.4 395.019 2417.92C413.959 2476.65 430.302 2532.17 441.005 2570.86L426.287 2574.96C421.32 2557.01 415.127 2535.39 408.018 2511.5L357.128 2483.11 364.547 2469.71 401.684 2490.42C394.943 2468.2 387.553 2444.51 379.728 2420.29 365.947 2377.65 350.83 2333.44 335.549 2292.89L263.029 2276.26 266.431 2261.31 328.951 2275.65C310.356 2227.79 291.937 2186.89 275.792 2161.83L288.616 2153.5Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                fill-rule="evenodd"
-                d="M459.676 2039.8C457.045 1982.46 453.835 1937.59 449.891 1916.46L434.877 1919.29C439.046 1941.61 442.524 1993.79 445.331 2061.48C446.919 2099.78 448.286 2142.83 449.453 2187.89L398.367 2134.79L387.381 2145.45L450.02 2210.55C451.11 2255.72 452.008 2302.38 452.734 2347.87C454.069 2431.44 454.825 2511.03 455.133 2570.03L470.408 2569.95C470.103 2511.53 469.359 2432.96 468.05 2350.31L518.317 2285.18L506.243 2275.79L467.647 2325.79C466.972 2286.25 466.167 2246.14 465.218 2207.19C463.973 2156.06 462.48 2106.91 460.708 2063.63L503.775 2007.35L491.662 1998.01L459.676 2039.8Z"
-                clip-rule="evenodd"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M696.902 2255.57C726.548 2218.19 754.789 2187.71 778.949 2169.67L769.834 2157.36C741.306 2178.66 708.477 2215.33 675.157 2258.54C659.547 2278.79 643.749 2300.58 628.145 2323.06V2280.48H612.869V2345.39C592.269 2375.89 572.216 2407.18 553.611 2437.27C522.455 2487.67 495.329 2534.75 476.463 2569.22L489.85 2576.6C508.192 2543.09 534.449 2497.48 564.649 2448.5L635.488 2440.16L633.709 2424.93L574.996 2431.84C591.491 2405.47 608.966 2378.44 626.824 2352.05C646.02 2323.69 665.641 2296.1 684.949 2270.91H754.005V2255.57H696.902Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M326.618 644.994 292.885 689.942C290.832 692.677 287.485 693.992 284.207 693.353L242.514 685.225C233.544 683.477 228.132 695.206 235.055 701.392L267.823 730.673C270.215 732.811 271.345 736.103 270.795 739.334L262.574 787.615C261.029 796.692 271.77 802.31 277.852 795.606L311.512 758.502C313.488 756.323 316.353 755.271 319.206 755.675L358.161 761.194C366.936 762.438 371.906 751.06 365.233 745.002L336.263 718.7C333.937 716.588 332.825 713.375 333.324 710.205L342.459 652.208C343.953 642.722 332.304 637.418 326.618 644.994ZM279.959 1147.29 265.116 1165.6C264.213 1166.72 262.74 1167.25 261.298 1166.99L242.953 1163.68C239.006 1162.97 236.625 1167.75 239.671 1170.27L254.089 1182.2C255.142 1183.07 255.639 1184.41 255.397 1185.72L251.78 1205.39C251.1 1209.09 255.826 1211.38 258.502 1208.65L273.312 1193.53C274.182 1192.65 275.442 1192.22 276.698 1192.38L293.838 1194.63C297.699 1195.14 299.885 1190.5 296.95 1188.03L284.203 1177.32C283.179 1176.46 282.69 1175.15 282.91 1173.86L286.929 1150.23C287.586 1146.36 282.461 1144.2 279.959 1147.29Z"
-                class="colore7e8ff svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                d="M1222 1374C1228.54 1403.45 1251.99 1427.18 1262.9 1435.36L1238.36 1488.53L1168.82 1492.62C1152.46 1451.72 1123.83 1439.45 1066.57 1423.09C1009.31 1406.73 968.41 1374 988.861 1341.28C1005.22 1315.11 1096.57 1324.92 1140.19 1333.1C1107.47 1304.47 1123.83 1292.2 1156.55 1296.29C1189.28 1300.38 1213.82 1337.19 1222 1374Z"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M1134.13 1288.24C1140.85 1287.02 1148.9 1287.09 1157.57 1288.18C1176.77 1290.58 1192.84 1302.46 1204.91 1317.82C1217.01 1333.23 1225.66 1352.79 1229.98 1372.23C1235.93 1399.01 1257.7 1421.23 1267.81 1428.81L1273.1 1432.78L1243.73 1496.4L1163.42 1501.13L1161.23 1495.65C1153.66 1476.72 1143.51 1464.84 1128.7 1455.59C1113.44 1446.05 1093.02 1439.15 1064.33 1430.95C1035.04 1422.58 1009.07 1409.82 992.893 1394.2C984.768 1386.36 978.683 1377.37 976.359 1367.43C973.975 1357.24 975.739 1346.84 981.925 1336.95C987.839 1327.49 999.464 1322.57 1011.46 1319.84C1023.88 1317 1038.91 1316.03 1054.36 1316.13C1075.94 1316.28 1099.12 1318.54 1118.67 1321.31C1118.06 1320.31 1117.52 1319.33 1117.03 1318.36C1113.73 1311.76 1112.75 1304.3 1117.03 1297.89C1120.91 1292.07 1127.69 1289.41 1134.13 1288.24ZM1131.66 1311.04C1133.53 1314.78 1137.74 1320.08 1145.58 1326.95L1168.11 1346.66L1138.69 1341.14C1117.18 1337.11 1083.95 1332.69 1054.25 1332.49C1039.37 1332.39 1025.76 1333.35 1015.09 1335.79C1003.99 1338.32 998.064 1341.99 995.798 1345.62C991.758 1352.08 990.966 1358.05 992.289 1363.71C993.671 1369.61 997.556 1375.96 1004.26 1382.43C1017.74 1395.45 1040.85 1407.23 1068.82 1415.22C1097.38 1423.38 1119.91 1430.8 1137.37 1441.71C1153.76 1451.95 1165.49 1465.13 1174.09 1484.11L1232.98 1480.65L1252.82 1437.67C1240.06 1426.45 1220.22 1403.73 1214.01 1375.78C1210.15 1358.4 1202.44 1341.16 1192.05 1327.93C1181.62 1314.66 1169.06 1306.1 1155.54 1304.41C1147.85 1303.45 1141.59 1303.52 1137.06 1304.34C1132.25 1305.22 1130.85 1306.65 1130.64 1306.97C1130.64 1306.97 1130.64 1306.97 1130.64 1306.97C1130.6 1307.02 1130.53 1307.13 1130.54 1307.54C1130.56 1308.09 1130.75 1309.22 1131.66 1311.04Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                d="M2666.01 2583.14L2640.19 2336.88L1737.32 2330.95L1729.32 2583.14H2666.01Z"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                d="M2069.94 1085.21L2057.93 1189.29L2061.94 1269.35L2210.05 1285.36L2274.09 1205.3L2262.08 1085.21C2286.49 1071.26 2304.82 1033.02 2309.15 973.127C2317.48 970.458 2334.14 957.915 2334.14 929.094C2334.14 900.273 2315.88 890.399 2306.75 889.064C2293.75 791.898 2243.35 756.967 2158.01 756.967C2076.19 756.967 2031.83 810.478 2018.37 889.064C2008.87 887.73 1989.88 893.868 1989.88 929.094C1989.88 964.32 2006.94 973.127 2015.47 973.127C2023.3 1040.99 2058.13 1075.76 2069.94 1085.21Z"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M2068.37 799.305C2046.9 820.957 2032.98 852.235 2026.43 890.446L2025.09 898.27L2017.23 897.165C2014.7 896.809 2010.19 897.419 2006.27 901.234C2002.41 904.985 1998.06 912.891 1998.06 929.094C1998.06 945.434 2002.01 954.437 2005.84 959.182C2009.71 963.968 2013.81 964.946 2015.47 964.946H2022.76L2023.6 972.189C2031.13 1037.45 2064.53 1070.4 2075.05 1078.82L2078.59 1081.65L2066.14 1189.55L2069.76 1261.96L2206.46 1276.74L2265.62 1202.79L2253.42 1080.74L2258.03 1078.11C2268.21 1072.29 2277.91 1060.91 2285.65 1043.13C2293.36 1025.41 2298.87 1001.84 2300.99 972.538L2301.39 967.023L2306.65 965.336C2311.65 963.735 2325.96 954.302 2325.96 929.094C2325.96 904.732 2311.08 897.965 2305.56 897.159L2299.46 896.266L2298.64 890.149C2292.3 842.742 2277.03 811.952 2254.25 792.846C2231.41 773.692 2199.69 765.147 2158.01 765.147C2119.04 765.147 2089.67 777.818 2068.37 799.305ZM2056.75 787.787C2081.45 762.872 2115.16 748.787 2158.01 748.787C2201.67 748.787 2237.81 757.707 2264.76 780.31C2290.78 802.13 2306.98 835.649 2314.08 882.561C2326.61 887.127 2342.32 900.747 2342.32 929.094C2342.32 956.974 2328.27 972.454 2316.92 978.625C2314.46 1007.05 2308.82 1030.87 2300.65 1049.66C2292.98 1067.29 2282.89 1080.9 2270.72 1089.41L2282.56 1207.8L2213.63 1293.97L2054.11 1276.73L2049.73 1189.02L2061.31 1088.62C2046.65 1075.54 2016.79 1041.21 2008.12 980.103C2003.01 978.463 1997.64 975.069 1993.11 969.458C1986.28 960.994 1981.7 947.98 1981.7 929.094C1981.7 910.071 1986.85 897.295 1994.86 889.504C2000.08 884.436 2006.06 881.921 2011.52 881.067C2018.9 843.51 2033.56 811.174 2056.75 787.787Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                fill-rule="evenodd"
-                d="M1689.66 2302.11C1729.69 2382.17 2013.9 2382.17 2182.02 2382.17C2316.04 2382.17 2448.2 2374.69 2528.68 2353.36C2556.98 2386.28 2663.25 2421.65 2697.83 2418.19C2737.86 2414.19 2893.97 1997.88 2897.98 1901.81C2901.98 1805.74 2777.89 1381.43 2569.73 1253.33C2569.43 1253.16 2569.13 1253 2568.83 1252.83C2568.68 1251.66 2568.54 1250.49 2568.4 1249.33C2467.69 1177.17 2358.93 1155.77 2294.1 1157.26C2294.1 1183.95 2269.29 1237.32 2170.01 1237.32C2070.74 1237.32 2048.59 1183.95 2045.92 1157.26C2007.23 1158.34 1905.68 1171.71 1815.75 1213.69C1758.13 1235.72 1696.02 1273.25 1653.68 1334.22C1592.52 1422.3 1567.24 1499.91 1550.43 1551.51C1539.74 1584.34 1532.48 1606.64 1521.58 1614.42C1506.91 1624.91 1450.51 1569.51 1394.37 1514.37L1394.37 1514.37C1343.31 1464.22 1292.47 1414.28 1273.4 1414.28C1233.37 1414.28 1141.3 1494.34 1141.3 1542.37C1141.3 1590.41 1361.47 1998.71 1425.51 2042.74C1487.55 2085.39 1631.81 2086.73 1673.55 2046.76C1674.88 2181.84 1680.9 2284.59 1689.66 2302.11Z"
-                clip-rule="evenodd"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M2053.3 1148.87L2054.06 1156.45C2055.24 1168.23 2060.76 1186.21 2077.25 1201.26C2093.66 1216.23 2121.86 1229.14 2170.01 1229.14C2218.18 1229.14 2247.07 1216.22 2263.83 1201.21C2280.68 1186.1 2285.92 1168.32 2285.92 1157.26V1149.27L2293.92 1149.08C2360.38 1147.56 2470.91 1169.41 2573.16 1242.68L2576.08 1244.77L2576.46 1247.88C2681.69 1313.98 2764.73 1453.06 2820.95 1586.4C2849.38 1653.83 2871.15 1720.25 2885.57 1775.92C2899.91 1831.3 2907.2 1876.84 2906.15 1902.15C2905.1 1927.35 2894.27 1972.33 2878.48 2024.82C2862.59 2077.65 2841.38 2139.01 2819.05 2197.45C2796.74 2255.87 2773.24 2311.55 2752.76 2352.96C2742.53 2373.63 2732.94 2390.98 2724.53 2403.39C2720.33 2409.57 2716.26 2414.79 2712.37 2418.62C2708.79 2422.14 2704.11 2425.79 2698.64 2426.33C2688.65 2427.33 2674.48 2425.52 2659.04 2422.14C2643.37 2418.71 2625.61 2413.47 2608.1 2407.1C2590.6 2400.74 2573.19 2393.18 2558.27 2385.04C2545.52 2378.1 2534.1 2370.47 2526.03 2362.49C2444.06 2383.18 2313.47 2390.35 2182.02 2390.35H2181.82C2097.87 2390.35 1984.45 2390.35 1886.96 2380.3C1838.21 2375.27 1793.02 2367.69 1757.32 2356.18C1722.15 2344.83 1693.94 2328.97 1682.34 2305.77C1680.76 2302.6 1679.53 2298.22 1678.5 2293.34C1677.43 2288.29 1676.44 2282.08 1675.52 2274.85C1673.67 2260.4 1672.04 2241.49 1670.65 2219.03C1668.1 2177.63 1666.33 2123.81 1665.55 2062.76C1654.91 2068.95 1641.91 2073.6 1627.8 2076.95C1606.65 2081.97 1582.07 2084.25 1557.03 2083.91C1507.3 2083.23 1453.83 2072.13 1420.88 2049.48C1411.76 2043.21 1400.66 2031.13 1388.48 2015.62C1376.13 1999.9 1362.13 1979.94 1347.24 1957.22C1317.45 1911.78 1283.82 1854.93 1252.24 1798.03C1220.65 1741.12 1191.04 1684.04 1169.31 1638.13C1158.45 1615.18 1149.51 1594.92 1143.26 1578.81C1140.14 1570.77 1137.65 1563.65 1135.93 1557.69C1134.27 1551.92 1133.12 1546.59 1133.12 1542.37C1133.12 1528.02 1139.88 1512.39 1149.45 1497.64C1159.16 1482.68 1172.4 1467.67 1186.77 1454.32C1201.16 1440.96 1216.9 1429.07 1231.77 1420.46C1246.35 1412.02 1261.16 1406.1 1273.4 1406.1C1277.41 1406.1 1281.5 1407.37 1285.28 1409.04C1289.17 1410.75 1293.34 1413.16 1297.68 1416.05C1306.38 1421.81 1316.43 1429.89 1327.27 1439.36C1348.93 1458.27 1374.54 1483.42 1399.97 1508.4L1400.1 1508.53L1400.1 1508.53C1400.12 1508.55 1400.14 1508.57 1400.16 1508.59C1428.29 1536.22 1456.16 1563.58 1478.81 1582.76C1490.19 1592.39 1499.88 1599.64 1507.39 1603.82C1511.17 1605.93 1513.95 1607 1515.83 1607.38C1516.51 1607.52 1516.93 1607.54 1517.15 1607.53C1520.5 1604.96 1524.22 1599.39 1528.55 1589.17C1532.9 1578.91 1537.27 1565.52 1542.65 1548.98L1542.68 1548.91C1559.53 1497.15 1585.11 1418.62 1646.96 1329.55C1690.47 1266.9 1754.06 1228.56 1812.56 1206.15C1903.66 1163.68 2006.21 1150.18 2045.69 1149.08L2053.3 1148.87ZM1517.35 1607.51C1517.35 1607.51 1517.33 1607.52 1517.3 1607.52C1517.33 1607.51 1517.35 1607.51 1517.35 1607.51ZM2301.69 1165.37C2299.6 1180.03 2291.8 1198.11 2274.74 1213.39C2254.27 1231.74 2221.12 1245.5 2170.01 1245.5C2118.89 1245.5 2086.38 1231.73 2066.23 1213.34C2049.37 1197.96 2041.82 1179.95 2038.94 1165.75C1996.68 1168.12 1902.74 1182.1 1819.21 1221.1L1818.95 1221.23L1818.67 1221.33C1762.01 1243 1701.5 1279.7 1660.4 1338.88C1599.95 1425.93 1574.97 1502.59 1558.21 1554.05L1558.11 1554.37C1552.84 1570.52 1548.27 1584.58 1543.62 1595.55C1539.06 1606.31 1533.79 1615.76 1526.34 1621.08C1521.93 1624.23 1516.79 1624.27 1512.58 1623.41C1508.35 1622.56 1503.88 1620.59 1499.43 1618.11C1490.49 1613.14 1479.82 1605.05 1468.24 1595.25C1445.06 1575.62 1416.76 1547.82 1388.83 1520.39L1388.64 1520.21L1388.64 1520.21C1388.62 1520.19 1388.6 1520.17 1388.59 1520.16C1363.02 1495.04 1337.75 1470.23 1316.51 1451.68C1305.87 1442.39 1296.45 1434.85 1288.65 1429.68C1284.75 1427.1 1281.42 1425.22 1278.67 1424C1275.83 1422.75 1274.15 1422.46 1273.4 1422.46C1265.62 1422.46 1253.92 1426.54 1239.97 1434.62C1226.32 1442.52 1211.54 1453.64 1197.91 1466.3C1184.26 1478.98 1171.98 1492.98 1163.17 1506.55C1154.24 1520.31 1149.48 1532.71 1149.48 1542.37C1149.48 1544.16 1150.06 1547.64 1151.65 1553.15C1153.19 1558.48 1155.49 1565.1 1158.51 1572.9C1164.56 1588.49 1173.32 1608.35 1184.1 1631.13C1205.64 1676.65 1235.08 1733.41 1266.54 1790.09C1298 1846.77 1331.42 1903.25 1360.93 1948.25C1375.68 1970.76 1389.39 1990.3 1401.35 2005.52C1413.47 2020.95 1423.26 2031.26 1430.15 2036C1459.23 2056 1508.91 2066.89 1557.25 2067.55C1581.25 2067.88 1604.44 2065.68 1624.02 2061.03C1643.8 2056.34 1658.99 2049.38 1667.89 2040.85L1681.55 2027.78L1681.73 2046.68C1682.39 2114.14 1684.23 2173.44 1686.98 2218.02C1688.36 2240.31 1689.96 2258.82 1691.75 2272.78C1692.64 2279.76 1693.57 2285.5 1694.51 2289.95C1695.49 2294.58 1696.37 2297.24 1696.97 2298.45C1705.39 2315.28 1727.72 2329.44 1762.35 2340.61C1796.45 2351.61 1840.33 2359.04 1888.64 2364.02C1985.22 2373.98 2097.87 2373.99 2182.02 2373.99C2316.05 2373.99 2447.24 2366.48 2526.58 2345.45L2531.54 2344.13L2534.88 2348.02C2540.98 2355.12 2551.89 2362.93 2566.1 2370.68C2580.14 2378.33 2596.77 2385.57 2613.69 2391.73C2630.62 2397.89 2647.68 2402.9 2662.54 2406.16C2677.64 2409.47 2689.71 2410.78 2697.01 2410.06C2696.95 2410.06 2696.92 2410.07 2696.92 2410.06C2696.91 2410.03 2698.19 2409.62 2700.89 2406.96C2703.69 2404.21 2707.07 2399.98 2710.99 2394.21C2718.79 2382.71 2727.99 2366.13 2738.09 2345.7C2758.26 2304.93 2781.55 2249.78 2803.77 2191.61C2825.98 2133.47 2847.05 2072.49 2862.81 2020.11C2878.67 1967.4 2888.85 1924.31 2889.8 1901.47C2890.75 1878.75 2884.03 1835.23 2869.73 1780.02C2855.5 1725.11 2833.99 1659.44 2805.88 1592.76C2749.48 1459 2667.29 1323.06 2565.59 1260.39C2565.36 1260.26 2565.14 1260.14 2564.91 1260.01L2561.22 1258L2560.72 1253.91C2466.16 1187.18 2364.95 1165.65 2301.69 1165.37Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                d="M1993.88 821.014C1987.48 859.443 1993.88 913.082 2009.9 933.097L2041.92 865.046C2051.53 871.451 2096.63 873.052 2113.97 873.052 2181.22 869.85 2230.06 831.688 2246.07 813.008 2249.27 841.829 2292.77 918.419 2310.12 953.111 2331.47 921.088 2345.34 837.026 2326.13 756.967 2306.92 676.907 2254.08 672.905 2222.05 680.911 2133.99 612.86 2033.91 620.866 1985.88 688.917 1947.45 743.357 1969.87 799.665 1993.88 821.014ZM1689.29 1550.38C1677.28 1702.49 1673.28 1942.67 1673.28 2046.74 1660.47 2059.55 1633.25 2065.42 1621.24 2066.76 1643.66 2015.52 1673.28 1702.49 1689.29 1550.38Z"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                d="M2493.56 2431.12C2495.44 2409.65 2503.1 2407.34 2529.13 2382.75C2534.59 2377.59 2539.3 2372.59 2543.31 2367.89C2569.66 2387.53 2640.04 2408.8 2671.94 2416.98C2673.65 2461.44 2638.3 2534.49 2623.34 2542.48C2605.33 2552.09 2537.44 2534.95 2520.16 2519.26C2506.34 2506.71 2518.55 2472.36 2526.96 2458.67C2517.87 2451.66 2492.05 2448.3 2493.56 2431.12Z"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                fill-rule="evenodd"
-                d="M2542.06 2356.76L2537.09 2362.58C2533.26 2367.06 2528.76 2371.85 2523.51 2376.81C2518.67 2381.38 2514.5 2385.15 2510.82 2388.47C2509.61 2389.56 2508.46 2390.6 2507.35 2391.61C2502.96 2395.61 2499.14 2399.19 2496.06 2402.79C2489.34 2410.68 2486.46 2418.34 2485.41 2430.41C2484.18 2444.41 2494.68 2451.88 2502.5 2455.96C2505.84 2457.7 2509.45 2459.22 2512.53 2460.52C2513.21 2460.81 2513.86 2461.08 2514.48 2461.35C2514.99 2461.56 2515.46 2461.77 2515.92 2461.97C2512.42 2469.29 2509.05 2478.56 2507.2 2487.79C2505.91 2494.23 2505.27 2501.08 2506.09 2507.47C2506.92 2513.86 2509.3 2520.45 2514.66 2525.32C2520.09 2530.25 2528.69 2534.7 2537.98 2538.45C2547.49 2542.29 2558.56 2545.72 2569.6 2548.32C2580.62 2550.92 2591.83 2552.75 2601.61 2553.28C2610.9 2553.79 2620.54 2553.25 2627.19 2549.69C2630.46 2547.95 2633.46 2544.96 2636.05 2541.88C2638.78 2538.64 2641.6 2534.61 2644.43 2530.07C2650.09 2520.97 2656.05 2509.31 2661.42 2496.59C2672.06 2471.42 2681.04 2440.71 2680.11 2416.66L2679.88 2410.57L2673.97 2409.05C2658.21 2405.01 2632.88 2397.72 2608.27 2389.02C2583.34 2380.2 2560.26 2370.32 2548.19 2361.33L2542.06 2356.76ZM2544.66 2378.68C2559.41 2387.87 2581.29 2396.83 2602.82 2404.44C2624.97 2412.27 2647.64 2418.97 2663.76 2423.29C2663.04 2442.99 2655.72 2468.07 2646.35 2490.22C2641.24 2502.32 2635.66 2513.19 2630.54 2521.43C2627.97 2525.55 2625.6 2528.89 2623.53 2531.35C2621.33 2533.97 2619.95 2535.01 2619.48 2535.26C2617.13 2536.52 2611.53 2537.44 2602.5 2536.95C2593.94 2536.48 2583.72 2534.84 2573.36 2532.4C2563.01 2529.96 2552.74 2526.76 2544.1 2523.28C2535.24 2519.7 2528.87 2516.12 2525.66 2513.21C2524.11 2511.8 2522.83 2509.39 2522.32 2505.38C2521.81 2501.37 2522.16 2496.43 2523.24 2491C2525.42 2480.1 2530.22 2469 2533.93 2462.96L2537.78 2456.69L2531.96 2452.2C2528.73 2449.71 2524.45 2447.81 2520.91 2446.3C2520.14 2445.97 2519.38 2445.65 2518.63 2445.34C2515.58 2444.05 2512.75 2442.86 2510.07 2441.46C2503.08 2437.81 2501.43 2435.02 2501.7 2431.84C2502.53 2422.43 2504.42 2418.2 2508.51 2413.41C2510.84 2410.69 2513.94 2407.74 2518.36 2403.71C2519.4 2402.76 2520.52 2401.76 2521.69 2400.69C2525.4 2397.35 2529.76 2393.42 2534.75 2388.7C2538.36 2385.29 2541.66 2381.94 2544.66 2378.68Z"
-                clip-rule="evenodd"
-                class="color032068 svgShape"
-              ></path>
-              <path
-                fill="#680325"
-                d="M2861.96 2053.93C2797.91 1929.03 2829.93 1756.37 2853.95 1685.65 2865.96 1731.02 2891.58 1832.96 2897.98 1877.8 2904.39 1922.63 2876.63 2013.9 2861.96 2053.93ZM2569.74 1949.85C2566.54 1889 2528.38 1743.03 2509.7 1677.65 2537.72 1749.7 2609.77 1869.79 2609.77 1949.85 2609.77 2013.9 2551.06 2232.72 2521.7 2334.13 2539.05 2231.39 2572.94 2010.69 2569.74 1949.85ZM1661.27 2054.75C1561.99 1971.49 1409.08 1942.67 1345.03 1938.66 1355.71 1969.35 1396.27 2037.14 1473.13 2062.76 1549.98 2088.37 1630.58 2068.09 1661.27 2054.75ZM2161.64 1118.06C2110.4 1118.06 2078.91 1096.71 2069.57 1086.03L2065.57 1126.06C2155.23 1177.3 2236.36 1147.41 2265.71 1126.06L2261.71 1086.03C2249.7 1096.71 2212.87 1118.06 2161.64 1118.06Z"
-                class="color032068 svgShape"
-              ></path>
-            </svg>
-            <div class="flex flex-col justify-between p-4 leading-normal">
-              <h5
-                class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-              >
-                Blood Report Analyzer
-              </h5>
-              <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                Upload your blood test report and instantly get an
-                easy-to-understand analysis with key health insights.
-              </p>
-            </div>
-          </a>
-          <a
-            href="#"
-            class="my-4 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 800 600"
-              id="AIIntelligence"
-            >
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M513.042 171.3C513.048 171.556 512.845 171.769 512.588 171.774L236.214 178.075C219.689 178.452 202.971 178.874 187.326 183.922C171.687 188.969 157.037 199.376 150.817 214.483C143.174 233.046 149.876 255.196 162.894 270.631C175.913 286.068 194.241 295.979 212.591 304.655C295.993 344.091 388.186 364.799 480.441 364.819C502.275 364.823 524.141 363.689 546.01 362.555C547.237 362.492 548.465 362.428 549.692 362.365C549.948 362.351 550.166 362.548 550.18 362.805C550.193 363.061 549.996 363.279 549.74 363.292C548.51 363.356 547.28 363.42 546.049 363.484C524.187 364.617 502.299 365.752 480.44 365.748C388.048 365.728 295.72 344.989 212.194 305.495C193.836 296.815 175.344 286.834 162.184 271.23C149.023 255.625 142.142 233.113 149.958 214.129C156.316 198.688 171.241 188.137 187.041 183.038C202.836 177.942 219.691 177.523 236.193 177.146L512.567 170.846C512.823 170.84 513.036 171.043 513.042 171.3Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                fill-rule="evenodd"
-                d="M439.317 575.696V69.8359H441.174V575.696H439.317Z"
-                clip-rule="evenodd"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M439.315 575.697C299.851 575.697 186.385 462.23 186.385 322.767C186.385 183.303 299.851 69.8369 439.315 69.8369"
-                opacity=".15"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M439.314 520.863C330.083 520.863 241.216 431.996 241.216 322.766C241.216 213.535 330.083 124.668 439.314 124.668"
-                opacity=".15"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M439.316 466.03C360.318 466.03 296.05 401.763 296.05 322.764C296.05 243.766 360.318 179.499 439.316 179.499"
-                opacity=".25"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M439.315 411.2C390.475 411.2 350.882 371.607 350.882 322.767C350.882 273.927 390.475 234.334 439.315 234.334"
-                opacity=".5"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M439.315 368.191C414.227 368.191 393.89 347.854 393.89 322.767C393.89 297.679 414.227 277.342 439.315 277.342"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M563.666 310.63L520.908 403.567L513.96 418.68H409.448L402.5 403.567L359.742 310.63L373.769 237.589L432.392 216.28H491.016L549.639 237.589L563.666 310.63Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M490.617 172.882V227.929C490.617 230.567 489.326 233.019 487.226 234.617C474.621 244.148 447.256 243.609 436.638 234.561C434.483 232.731 432.792 230.4 432.792 227.567V172.882H490.617Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M477.735 219.981C465.669 229.373 455.029 229.048 445.673 219.981V182.012H477.735V219.981Z"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#000000"
-                d="M490.617 172.882V196.328C470.797 209.684 451.603 213.019 432.792 196.513V172.882H490.617Z"
-                opacity=".42"
-                class="color000000 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M448.024 185.607H475.385V217.34L475.091 217.568C470.146 221.417 465.409 223.342 460.879 223.307C456.335 223.273 452.128 221.268 448.255 217.514L448.024 217.29V185.607ZM449.545 187.129V216.643C453.143 220.049 456.916 221.755 460.891 221.785C464.881 221.816 469.196 220.158 473.863 216.593V187.129H449.545Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M461.729 196.26H454.07C431.799 196.26 413.744 178.206 413.744 155.934V108.285C413.744 86.0131 431.799 83.9023 454.07 83.9023H461.729C484.001 83.9023 502.056 86.0131 502.056 108.285V155.934C502.056 178.206 484.001 196.26 461.729 196.26Z"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M116.284 410.478C91.9592 404.319 64.2451 406.117 44.6908 421.66C34.9306 429.418 28.2281 441.187 25.9547 453.427C23.6817 465.665 25.843 478.329 33.743 487.914C33.9061 488.112 33.8779 488.405 33.6799 488.568C33.482 488.731 33.1893 488.703 33.0261 488.505C24.9143 478.662 22.73 465.702 25.0415 453.257C27.3526 440.814 34.1645 428.84 44.1128 420.933C63.9752 405.145 92.0248 403.377 116.512 409.578C137.997 415.018 157.593 425.818 176.997 436.511C179.699 438 182.397 439.487 185.097 440.958C275.356 490.121 340.787 523.172 442.218 539.233C442.472 539.274 442.644 539.511 442.604 539.765C442.564 540.018 442.326 540.191 442.073 540.151C340.477 524.064 274.929 490.946 184.652 441.773C181.947 440.3 179.246 438.811 176.543 437.322C157.128 426.624 137.644 415.887 116.284 410.478Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M784.279 416.451H515.311V431.219H784.279V416.451ZM784.279 446.269H515.311V461.037H784.279V446.269ZM784.279 476.09H515.311V490.858H784.279V476.09Z"
-                opacity=".15"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M124.884 526.542C168.611 526.542 204.06 491.094 204.06 447.366 204.06 403.639 168.611 368.19 124.884 368.19 81.156 368.19 45.7078 403.639 45.7078 447.366 45.7078 491.094 81.156 526.542 124.884 526.542ZM320.07 31.1543H19.9796V58.5417H320.07V31.1543Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M320.07 69.877H19.9796V263.577H320.07V69.877Z"
-                opacity=".15"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M108.119 83.5713H35.3792V247.326H108.119V83.5713ZM196.431 83.5713H123.691V92.8603H196.431V83.5713ZM283.287 83.5713H210.547V92.8603H283.287V83.5713ZM196.431 115.668H123.691V160.458H196.431V115.668ZM196.431 172.252H123.691V217.042H196.431V172.252ZM108.119 256.066H35.3792V321.122H108.119V256.066ZM283.287 115.668H210.547V160.458H283.287V115.668ZM283.287 172.252H210.547V217.042H283.287V172.252Z"
-                opacity=".15"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M508.892 180.971C508.892 180.715 509.1 180.507 509.356 180.507H610.948C611.204 180.507 611.412 180.715 611.412 180.971 611.412 181.228 611.204 181.436 610.948 181.436H509.356C509.1 181.436 508.892 181.228 508.892 180.971ZM537.502 173.685C537.502 173.429 537.71 173.221 537.966 173.221H610.947C611.204 173.221 611.412 173.429 611.412 173.685 611.412 173.942 611.204 174.15 610.947 174.15H537.966C537.71 174.15 537.502 173.942 537.502 173.685ZM537.502 166.4C537.502 166.143 537.71 165.936 537.966 165.936H630.084C630.341 165.936 630.549 166.143 630.549 166.4 630.549 166.657 630.341 166.864 630.084 166.864H537.966C537.71 166.864 537.502 166.657 537.502 166.4ZM537.502 159.114C537.502 158.857 537.71 158.649 537.966 158.649H610.947C611.204 158.649 611.412 158.857 611.412 159.114 611.412 159.37 611.204 159.578 610.947 159.578H537.966C537.71 159.578 537.502 159.37 537.502 159.114Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M124.884 447.366H204.06C204.06 490.801 168.318 526.542 124.884 526.542C81.449 526.542 45.7078 490.801 45.7078 447.366C45.7078 403.932 81.449 368.19 124.884 368.19C141.347 368.19 157.407 373.325 170.816 382.876L124.884 447.366Z"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M117.255 431.194H196.431C196.431 474.628 160.69 510.369 117.255 510.369C73.8207 510.369 38.0794 474.628 38.0794 431.194C38.0794 395.066 62.8067 363.301 97.8302 354.438L117.255 431.194Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                fill-rule="evenodd"
-                d="M140.264 546.715H38.0794V542.07H140.264V546.715ZM140.264 564.563H38.0794V559.919H140.264V564.563Z"
-                clip-rule="evenodd"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M515.542 531.532C515.542 510.495 498.488 493.441 477.45 493.441V491.583C499.514 491.583 517.4 509.469 517.4 531.532C517.4 553.596 499.514 571.482 477.45 571.482C455.387 571.482 437.501 553.596 437.501 531.532H439.359C439.359 552.57 456.413 569.624 477.45 569.624C498.488 569.624 515.542 552.57 515.542 531.532Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M506.937 522.637C502.94 513.014 495.11 505.382 485.354 501.649L486.017 499.914C496.251 503.83 504.461 511.831 508.653 521.924L506.937 522.637Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                fill-rule="evenodd"
-                d="M750.051 279.388C729.013 279.388 711.959 296.442 711.959 317.48C711.959 338.517 729.013 355.571 750.051 355.571C771.088 355.571 788.142 338.517 788.142 317.48C788.142 296.442 771.088 279.388 750.051 279.388ZM710.101 317.48C710.101 295.416 727.987 277.53 750.051 277.53C772.114 277.53 790 295.416 790 317.48C790 339.543 772.114 357.429 750.051 357.429C727.987 357.429 710.101 339.543 710.101 317.48Z"
-                clip-rule="evenodd"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                fill-rule="evenodd"
-                d="M750.98 317.481V527.817C750.98 530.382 748.9 532.461 746.335 532.461H477.45V530.604H746.335C747.874 530.604 749.122 529.356 749.122 527.817V317.481H750.98Z"
-                clip-rule="evenodd"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M563.292 316.69C563.292 316.69 584.213 424.479 614.648 432.087C645.083 439.696 598.293 307.559 598.293 307.559L589.162 272.559H563.292V316.69Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M555.684 242.122C555.684 242.122 605.902 251.253 610.467 287.775C615.032 324.297 638.287 432.331 638.287 432.331L614.648 432.086L597.015 308.038C597.777 295.956 590.671 284.758 579.414 280.302L563.292 273.92L555.684 242.122Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M564.457 335.525C568.872 335.041 571.809 328.806 571.019 321.599L562.589 244.741C561.925 238.686 558.796 233.706 555.034 232.715L550.881 231.621C545.374 230.17 541.178 237.692 542.596 246.477L555.178 324.429C556.264 331.156 560.299 335.981 564.457 335.525Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M634.072 442.186C651.449 442.186 665.535 428.1 665.535 410.723C665.535 393.347 651.449 379.261 634.072 379.261C616.696 379.261 602.61 393.347 602.61 410.723C602.61 428.1 616.696 442.186 634.072 442.186Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M660.996 277.693L688.095 283.205C688.095 283.205 660.752 423.826 651.197 429.154C639.503 435.673 622.132 436.199 614.059 414.401C607.242 395.995 656.246 308.029 660.996 277.693Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M501.847 87.5045V108.516L413.953 102.859V87.5045C413.953 86.1298 414.12 84.7921 414.427 83.5103C416.34 75.5681 423.837 69.6416 432.801 69.6416H482.999C491.285 69.6416 498.326 74.7134 500.843 81.7545C501.494 83.5567 501.847 85.4887 501.847 87.5045Z"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M367.146 316.327C367.146 316.327 381.921 464.248 351.486 471.857C321.051 479.466 323.616 307.557 323.616 307.557L332.746 272.557L364.438 270.831L367.146 316.327Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M366.225 242.122C366.225 242.122 316.007 251.253 311.442 287.775C306.877 324.297 327.847 472.103 327.847 472.103L351.486 471.857L324.894 308.038C324.132 295.956 331.238 284.758 342.494 280.302L358.616 273.92L366.225 242.122Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M365.481 336.097C361.044 336.292 357.189 330.578 356.871 323.335L353.475 246.091C353.207 240.005 355.539 234.606 359.107 233.053 359.107 233.053 360.452 231.944 367.146 232.782 373.839 233.62 375.481 236.277 375.42 245.175L372.958 323.715C372.911 330.529 369.66 335.913 365.481 336.097ZM350.761 485.557C368.138 485.557 382.224 471.471 382.224 454.094 382.224 436.718 368.138 422.632 350.761 422.632 333.385 422.632 319.299 436.718 319.299 454.094 319.299 471.471 333.385 485.557 350.761 485.557Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M522.574 272.557L512.549 351.688C479.606 354.446 445.71 354.859 410.859 351.688L400.834 272.557C421.227 254.6 507.275 254.672 522.574 272.557Z"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M512.549 278.15L504.174 344.248C476.658 346.551 448.344 346.896 419.234 344.248L410.859 278.15C427.894 263.15 499.769 263.211 512.549 278.15Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M498.935 285.744L492.803 334.144C472.654 335.831 451.921 336.084 430.605 334.144L424.473 285.744C436.946 274.761 489.577 274.805 498.935 285.744Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M476.793 167.16C478.316 171.151 473.02 184.378 458.394 183.646C449.056 183.179 441.165 172.475 442.715 167.16L442.715 167.16L442.715 167.16C454.417 169.792 465.807 170.027 476.793 167.16Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M496.908 69.2612C497.743 65.9209 501.129 63.8903 504.469 64.7259L504.284 65.4641L504.469 64.7259L511.247 66.4214C514.587 67.257 516.618 70.6422 515.782 73.9826L508.919 101.421C508.083 104.761 504.698 106.792 501.358 105.956L494.58 104.261C491.239 103.425 489.209 100.04 490.044 96.6998L496.908 69.2612ZM504.1 66.2022C501.575 65.5706 499.016 67.1055 498.384 69.6305L491.52 97.069C490.889 99.5941 492.424 102.153 494.949 102.785L501.727 104.48C504.252 105.112 506.811 103.577 507.443 101.052L514.306 73.6133C514.938 71.0883 513.403 68.5293 510.878 67.8977L504.1 66.2022L504.284 65.4668L504.1 66.2022Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M515.981 39.5704L502.512 92.9789L501.036 92.6068L514.505 39.1982L515.981 39.5704Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M515.243 53.7717C507.31 53.7717 500.857 47.3183 500.857 39.3854C500.857 31.4534 507.31 25 515.243 25C523.176 25 529.629 31.4534 529.629 39.3854C529.629 47.3183 523.176 53.7717 515.243 53.7717Z"
-                opacity=".3"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M515.243 49.1262C509.871 49.1262 505.501 44.7565 505.501 39.3844C505.501 34.0132 509.871 29.6436 515.243 29.6436C520.615 29.6436 524.985 34.0132 524.985 39.3844C524.985 44.7565 520.615 49.1262 515.243 49.1262Z"
-                opacity=".3"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M515.243 44.4821C518.058 44.4821 520.34 42.2001 520.34 39.3851C520.34 36.5701 518.058 34.2881 515.243 34.2881C512.428 34.2881 510.146 36.5701 510.146 39.3851C510.146 42.2001 512.428 44.4821 515.243 44.4821Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M413.574 364.757C415.271 364.757 416.647 363.381 416.647 361.683C416.647 359.986 415.271 358.609 413.574 358.609C411.876 358.609 410.5 359.986 410.5 361.683C410.5 363.381 411.876 364.757 413.574 364.757Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M421.895 364.757C423.592 364.757 424.969 363.381 424.969 361.683C424.969 359.986 423.592 358.609 421.895 358.609C420.197 358.609 418.821 359.986 418.821 361.683C418.821 363.381 420.197 364.757 421.895 364.757Z"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M430.216 364.757C431.914 364.757 433.29 363.381 433.29 361.683C433.29 359.986 431.914 358.609 430.216 358.609C428.519 358.609 427.143 359.986 427.143 361.683C427.143 363.381 428.519 364.757 430.216 364.757Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                d="M476.923 167.032C477.156 167.215 477.219 167.655 477.171 168.242C476.839 172.28 473.113 174.284 469.121 174.977C462.509 176.125 452.291 175.182 446.563 172.791C444.426 171.898 442.51 170.39 442.565 168.074C442.576 167.645 442.656 167.276 442.845 167.032C454.551 169.816 465.933 169.998 476.923 167.032Z"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M390.24 530.947L413.574 515.087C413.574 515.087 377.702 446.484 365.072 441.761C349.614 435.982 336.69 442.417 333.776 457.674C330.863 472.931 365.062 511.897 390.24 530.947Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M406.303 506.273C414.788 500.153 422.656 494.967 433.516 495.904 439.522 497.645 446.689 500.865 450.934 505.183 455.18 509.501 457.399 515.163 458.93 519.976 459.652 522.251 458.695 522.522 457.363 523.043 455.585 523.739 453.284 523.319 451.993 521.434 449.742 518.144 448.044 514.386 444.148 512.471 440.251 510.557 434.577 509.723 430.858 511.073 427.139 512.424 426.819 514.33 427.489 517.455 420.873 507.609 417.855 510.356 406.303 506.273ZM424.843 548.093C424.843 548.093 407.681 545.836 396.732 539.194 382.959 530.838 391.333 517.435 391.333 517.435L424.843 548.093Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                fill-rule="evenodd"
-                d="M450.608 505.545C444.308 512.134 440.752 521.297 440.752 531.532H436.108C436.108 520.217 440.048 509.869 447.251 502.336C454.47 494.786 464.845 490.189 477.45 490.189V494.834C466.028 494.834 456.893 498.972 450.608 505.545Z"
-                clip-rule="evenodd"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M689.687 288.578C685.807 293.524 668.821 295.444 657.361 283.207C645.9 270.971 631.371 244.163 643.205 235.76C648.107 232.279 651.862 256.315 654.529 249.107C660.04 234.214 657.876 195.871 670.635 195.871C675 195.871 668.988 208.519 672.73 213.515C676.992 219.205 676.322 224.212 679.201 232.44C683.907 245.884 700.922 253.474 699.782 258.926C697.331 270.642 689.687 288.578 689.687 288.578Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#000000"
-                fill-opacity=".5"
-                d="M517.065 411.926L513.96 418.681H409.448L406.456 412.174L517.065 411.926Z"
-                class="color000000 svgShape"
-              ></path>
-              <g opacity=".25" fill="#000000" class="color000000 svgShape">
-                <path
-                  fill="#b32252"
-                  d="M501.847 113.939L413.953 108.282V92.927C413.953 91.5523 413.953 88.7684 413.953 88.7684C443.892 75.4849 476.379 76.5369 501.533 87.145C502.281 90.2862 501.887 91.4645 501.847 92.927V113.939Z"
-                  opacity=".25"
-                  class="color2249b3 svgShape"
-                ></path>
-              </g>
-              <path
-                fill="#ff6699"
-                d="M517.303 429.154H406.105C402.515 429.154 399.604 426.244 399.604 422.653V422.653C399.604 419.062 402.515 416.151 406.105 416.151H517.303C520.893 416.151 523.804 419.062 523.804 422.653V422.653C523.804 426.244 520.893 429.154 517.303 429.154Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M421.092 162.347C421.092 162.347 495.644 169.085 500.803 165.945C500.803 165.945 501.449 162.767 501.614 161.116L416.215 158.896L421.092 162.347Z"
-                opacity=".25"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M497.088 162.346H418.373C418.373 162.346 403.653 161.674 400.936 154.761C396.369 143.141 391.802 131.522 387.235 119.903C385.016 114.257 386.813 107.766 391.72 104.199C437.914 70.6177 492.648 76.7314 524.689 103.777C529.111 107.511 530.691 113.633 528.574 119.019C523.891 130.933 519.208 142.847 514.525 154.761C511.808 161.674 497.088 162.346 497.088 162.346Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                d="M492.26 143.385C470.073 136.969 445.727 136.969 423.539 143.385C419.718 144.484 415.337 143.286 413.654 140.433C412.02 137.562 410.386 134.691 408.752 131.82C407.069 128.976 409.604 125.228 414.541 123.803C442.539 115.708 473.26 115.707 501.258 123.803C506.196 125.228 508.73 128.977 507.048 131.82C505.414 134.691 503.78 137.562 502.145 140.433C500.462 143.286 496.081 144.484 492.26 143.385Z"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M443.449 131.788C435.889 131.208 428.064 132.834 421.361 136.378 420.207 136.986 418.719 136.894 417.987 136.089 417.27 135.276 416.553 134.462 415.836 133.649 415.105 132.847 415.67 131.473 417.161 130.685 425.62 126.213 435.494 124.161 445.033 124.893 446.716 125.021 447.78 126.057 447.43 127.083 447.096 128.115 446.763 129.147 446.429 130.179 446.079 131.208 444.751 131.886 443.449 131.788ZM472.063 131.788C479.623 131.208 487.448 132.834 494.151 136.378 495.306 136.986 496.794 136.894 497.525 136.089 498.242 135.276 498.959 134.462 499.676 133.649 500.407 132.847 499.843 131.473 498.351 130.685 489.893 126.213 480.018 124.161 470.479 124.893 468.797 125.021 467.732 126.057 468.082 127.083 468.416 128.115 468.75 129.147 469.083 130.179 469.434 131.208 470.762 131.886 472.063 131.788Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M429.098 325.914C429.098 325.657 429.306 325.449 429.563 325.449H493.846C494.102 325.449 494.31 325.657 494.31 325.914 494.31 326.17 494.102 326.378 493.846 326.378H429.563C429.306 326.378 429.098 326.17 429.098 325.914ZM429.098 321.122C429.098 320.865 429.306 320.657 429.563 320.657H493.846C494.102 320.657 494.31 320.865 494.31 321.122 494.31 321.378 494.102 321.586 493.846 321.586H429.563C429.306 321.586 429.098 321.378 429.098 321.122ZM429.098 316.327C429.098 316.07 429.306 315.862 429.563 315.862H493.846C494.102 315.862 494.31 316.07 494.31 316.327 494.31 316.583 494.102 316.791 493.846 316.791H429.563C429.306 316.791 429.098 316.583 429.098 316.327Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M669.32 224.686C698.799 224.686 722.696 200.789 722.696 171.31C722.696 141.831 698.799 117.934 669.32 117.934C639.841 117.934 615.944 141.831 615.944 171.31C615.944 200.789 639.841 224.686 669.32 224.686Z"
-                opacity=".15"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M669.32 213.115C692.408 213.115 711.125 194.398 711.125 171.31C711.125 148.222 692.408 129.505 669.32 129.505C646.232 129.505 627.515 148.222 627.515 171.31C627.515 194.398 646.232 213.115 669.32 213.115Z"
-                opacity=".15"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M669.32 201.544C686.017 201.544 699.553 188.008 699.553 171.311C699.553 154.613 686.017 141.077 669.32 141.077C652.622 141.077 639.086 154.613 639.086 171.311C639.086 188.008 652.622 201.544 669.32 201.544Z"
-                opacity=".25"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M669.32 189.973C679.627 189.973 687.982 181.617 687.982 171.311C687.982 161.004 679.627 152.648 669.32 152.648C659.013 152.648 650.658 161.004 650.658 171.311C650.658 181.617 659.013 189.973 669.32 189.973Z"
-                opacity=".5"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M669.32 180.896C674.614 180.896 678.906 176.604 678.906 171.31C678.906 166.015 674.614 161.724 669.32 161.724C664.025 161.724 659.734 166.015 659.734 171.31C659.734 176.604 664.025 180.896 669.32 180.896Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M10 31.1539C10 30.8974 10.2079 30.6895 10.4645 30.6895H100.737C100.993 30.6895 101.201 30.8974 101.201 31.1539 101.201 31.4104 100.993 31.6184 100.737 31.6184H10.4645C10.2079 31.6184 10 31.4104 10 31.1539ZM232.826 58.5426C232.826 58.2861 233.034 58.0781 233.29 58.0781H323.563C323.819 58.0781 324.027 58.2861 324.027 58.5426 324.027 58.7991 323.819 59.007 323.563 59.007H233.29C233.034 59.007 232.826 58.7991 232.826 58.5426ZM26.5185 256.066C26.5185 255.81 26.7264 255.602 26.9829 255.602H117.255C117.512 255.602 117.72 255.81 117.72 256.066 117.72 256.323 117.512 256.53 117.255 256.53H26.9829C26.7264 256.53 26.5185 256.323 26.5185 256.066Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M36.1767 48.7313C38.7121 48.7313 40.7675 46.676 40.7675 44.1406C40.7675 41.6052 38.7121 39.5498 36.1767 39.5498C33.6413 39.5498 31.586 41.6052 31.586 44.1406C31.586 46.676 33.6413 48.7313 36.1767 48.7313Z"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M52.9213 48.7313C55.4568 48.7313 57.5121 46.676 57.5121 44.1406C57.5121 41.6052 55.4568 39.5498 52.9213 39.5498C50.3859 39.5498 48.3306 41.6052 48.3306 44.1406C48.3306 46.676 50.3859 48.7313 52.9213 48.7313Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M784.279 446.269H515.311V461.037H784.279V446.269ZM784.279 476.09H515.311V490.858H784.279V476.09Z"
-                opacity=".15"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M508.892 180.971C508.892 180.715 509.1 180.507 509.356 180.507H610.948C611.204 180.507 611.412 180.715 611.412 180.971 611.412 181.228 611.204 181.436 610.948 181.436H509.356C509.1 181.436 508.892 181.228 508.892 180.971ZM537.502 173.685C537.502 173.429 537.71 173.221 537.966 173.221H610.947C611.204 173.221 611.412 173.429 611.412 173.685 611.412 173.942 611.204 174.15 610.947 174.15H537.966C537.71 174.15 537.502 173.942 537.502 173.685ZM537.502 166.4C537.502 166.143 537.71 165.936 537.966 165.936H630.084C630.341 165.936 630.549 166.143 630.549 166.4 630.549 166.657 630.341 166.864 630.084 166.864H537.966C537.71 166.864 537.502 166.657 537.502 166.4ZM537.502 159.114C537.502 158.857 537.71 158.649 537.966 158.649H610.947C611.204 158.649 611.412 158.857 611.412 159.114 611.412 159.37 611.204 159.578 610.947 159.578H537.966C537.71 159.578 537.502 159.37 537.502 159.114Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M564.457 335.525C568.872 335.041 571.809 328.806 571.019 321.599L562.589 244.741C561.925 238.686 558.796 233.706 555.034 232.715L550.881 231.621C545.374 230.17 541.178 237.692 542.596 246.477L555.178 324.429C556.264 331.156 560.299 335.981 564.457 335.525Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M512.549 278.15L504.174 344.248C476.658 346.551 448.344 346.896 419.234 344.248L410.859 278.15C427.894 263.15 499.769 263.211 512.549 278.15Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M498.935 285.744L492.803 334.144C472.654 335.831 451.921 336.084 430.605 334.144L424.473 285.744C436.946 274.761 489.577 274.805 498.935 285.744Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#464646"
-                d="M476.793 167.16C478.316 171.151 473.02 184.378 458.394 183.646C449.056 183.179 441.165 172.475 442.715 167.16L442.715 167.16L442.715 167.16C454.417 169.792 465.807 170.027 476.793 167.16Z"
-                class="color464646 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M413.574 364.757C415.271 364.757 416.647 363.381 416.647 361.683C416.647 359.986 415.271 358.609 413.574 358.609C411.876 358.609 410.5 359.986 410.5 361.683C410.5 363.381 411.876 364.757 413.574 364.757Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M421.895 364.757C423.592 364.757 424.969 363.381 424.969 361.683C424.969 359.986 423.592 358.609 421.895 358.609C420.197 358.609 418.821 359.986 418.821 361.683C418.821 363.381 420.197 364.757 421.895 364.757Z"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M430.216 364.757C431.914 364.757 433.29 363.381 433.29 361.683C433.29 359.986 431.914 358.609 430.216 358.609C428.519 358.609 427.143 359.986 427.143 361.683C427.143 363.381 428.519 364.757 430.216 364.757Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#ffffff"
-                d="M476.923 167.032C477.156 167.215 477.219 167.655 477.171 168.242C476.839 172.28 473.113 174.284 469.121 174.977C462.509 176.125 452.291 175.182 446.563 172.791C444.426 171.898 442.51 170.39 442.565 168.074C442.576 167.645 442.656 167.276 442.845 167.032C454.551 169.816 465.933 169.998 476.923 167.032Z"
-                class="colorffffff svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M424.843 548.093C424.843 548.093 407.681 545.836 396.732 539.194C382.959 530.838 391.333 517.435 391.333 517.435L424.843 548.093Z"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M421.092 162.347C421.092 162.347 495.644 169.085 500.803 165.945C500.803 165.945 501.449 162.767 501.614 161.116L416.215 158.896L421.092 162.347Z"
-                opacity=".25"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                fill-rule="evenodd"
-                d="M429.098 325.914C429.098 325.657 429.306 325.449 429.563 325.449H493.846C494.102 325.449 494.31 325.657 494.31 325.914 494.31 326.17 494.102 326.378 493.846 326.378H429.563C429.306 326.378 429.098 326.17 429.098 325.914ZM429.098 321.122C429.098 320.865 429.306 320.657 429.563 320.657H493.846C494.102 320.657 494.31 320.865 494.31 321.122 494.31 321.378 494.102 321.586 493.846 321.586H429.563C429.306 321.586 429.098 321.378 429.098 321.122ZM429.098 316.327C429.098 316.07 429.306 315.862 429.563 315.862H493.846C494.102 315.862 494.31 316.07 494.31 316.327 494.31 316.583 494.102 316.791 493.846 316.791H429.563C429.306 316.791 429.098 316.583 429.098 316.327ZM10 31.1539C10 30.8974 10.2079 30.6895 10.4645 30.6895H100.737C100.993 30.6895 101.201 30.8974 101.201 31.1539 101.201 31.4104 100.993 31.6184 100.737 31.6184H10.4645C10.2079 31.6184 10 31.4104 10 31.1539Z"
-                clip-rule="evenodd"
-                class="color2249b3 svgShape"
-              ></path>
-              <path
-                fill="#e1b0c0"
-                d="M36.1767 48.7313C38.7121 48.7313 40.7675 46.676 40.7675 44.1406C40.7675 41.6052 38.7121 39.5498 36.1767 39.5498C33.6413 39.5498 31.586 41.6052 31.586 44.1406C31.586 46.676 33.6413 48.7313 36.1767 48.7313Z"
-                class="colorb0c1e1 svgShape"
-              ></path>
-              <path
-                fill="#ff6699"
-                d="M52.9213 48.7313C55.4568 48.7313 57.5121 46.676 57.5121 44.1406C57.5121 41.6052 55.4568 39.5498 52.9213 39.5498C50.3859 39.5498 48.3306 41.6052 48.3306 44.1406C48.3306 46.676 50.3859 48.7313 52.9213 48.7313Z"
-                class="colorff7373 svgShape"
-              ></path>
-              <path
-                fill="#b32252"
-                d="M395.709 541.272C384.595 531 403.963 495.213 424.255 504.906C433.778 509.456 463.651 520.899 461.704 525.319C459.758 529.74 443.342 550.032 429.406 553.034C411.147 556.967 395.709 541.272 395.709 541.272Z"
-                class="color2249b3 svgShape"
-              ></path>
-            </svg>
-            <div class="flex flex-col justify-between p-4 leading-normal">
-              <h5
-                class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-              >
-                AI-Powered Blood Report Analyzer
-              </h5>
-              <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                Automatically detect key parameters and compare them with
-                healthy ranges.
-              </p>
-            </div>
+        
+        <div class="mt-6 text-center">
+          <a href="https://www.youtube.com/channel/your-channel" target="_blank" class="inline-flex items-center text-pink-500 hover:text-pink-400">
+            <i class="ph-youtube-logo mr-2 text-xl"></i>
+            Visit our YouTube channel for more videos
           </a>
         </div>
       </div>
     </div>
+    
+    <!-- GitHub Tab -->
+    <div class="tab-content" id="github">
+      <div class="demo-container rounded-2xl p-8">
+        <h4 class="text-xl font-semibold mb-4 text-center">GitHub Repository</h4>
+        <p class="text-gray-400 text-center mb-6">Explore our codebase, contribute, or report issues on GitHub</p>
+        
+        <div class="github-card bg-gray-800 p-6 rounded-xl max-w-md mx-auto">
+          <div class="flex items-center mb-4">
+            <i class="ph-github-logo text-3xl mr-3"></i>
+            <h5 class="text-lg font-semibold">QuantumCoder/AI-Disease-Prediction</h5>
+          </div>
+          <p class="text-gray-400 mb-4">AI-powered disease prediction system using machine learning algorithms to analyze symptoms and predict potential health issues.</p>
+          
+          <div class="flex justify-between text-sm text-gray-500 mb-4">
+            <span><i class="ph-star mr-1"></i> 128 stars</span>
+            <span><i class="ph-git-fork mr-1"></i> 42 forks</span>
+            <span><i class="ph-eye mr-1"></i> 256 watching</span>
+          </div>
+          
+          <div class="flex space-x-3">
+            <a href="https://github.com/QuantumCoder/AI-Disease-Prediction" target="_blank" class="flex-1 py-2 bg-pink-600 hover:bg-pink-500 text-center rounded-lg transition-colors">
+              View Repository
+            </a>
+            <a href="https://github.com/QuantumCoder/AI-Disease-Prediction/issues" target="_blank" class="flex-1 py-2 border border-pink-500 hover:bg-pink-600 text-center rounded-lg transition-colors">
+              Report Issue
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Dark Theme Script -->
-    <script src="main.js"></script>
+  <!-- Team -->
+  <section id="team" class="py-20 bg-gray-900/40">
+    <h3 class="text-3xl font-bold text-center mb-4">Meet Our Team</h3>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-14">The talented developers behind this innovative project</p>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
+      <!-- Kishor Irnak -->
+      <div class="team-card bg-gray-900 p-6 rounded-2xl text-center">
+        <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-pink-500 to-purple-600 mb-4 flex items-center justify-center text-4xl text-white">
+          KI
+        </div>
+        <h4 class="text-xl font-semibold">Kishor Irnak</h4>
+        <p class="text-gray-400 mb-3">Front-End Developer</p>
+        <div class="flex justify-center gap-4">
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-github-logo text-xl"></i></a>
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-linkedin-logo text-xl"></i></a>
+        </div>
+      </div>
 
-    <!-- flowbite CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-  </body>
+      <!-- Noman Ahmed Kadiwal -->
+      <div class="team-card bg-gray-900 p-6 rounded-2xl text-center">
+        <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-pink-500 to-purple-600 mb-4 flex items-center justify-center text-4xl text-white">
+          NK
+        </div>
+        <h4 class="text-xl font-semibold">Noman Ahmed Kadiwal</h4>
+        <p class="text-gray-400 mb-3">AI/ML Developer</p>
+        <div class="flex justify-center gap-4">
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-github-logo text-xl"></i></a>
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-linkedin-logo text-xl"></i></a>
+        </div>
+      </div>
+
+      <!-- Anmol Late -->
+      <div class="team-card bg-gray-900 p-6 rounded-2xl text-center">
+        <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-pink-500 to-purple-600 mb-4 flex items-center justify-center text-4xl text-white">
+          AL
+        </div>
+        <h4 class="text-xl font-semibold">Anmol Late</h4>
+        <p class="text-gray-400 mb-3">Backend Developer</p>
+        <div class="flex justify-center gap-4">
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-github-logo text-xl"></i></a>
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-linkedin-logo text-xl"></i></a>
+        </div>
+      </div>
+
+      <!-- Sanika Choughule -->
+      <div class="team-card bg-gray-900 p-6 rounded-2xl text-center">
+        <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-pink-500 to-purple-600 mb-4 flex items-center justify-center text-4xl text-white">
+          SC
+        </div>
+        <h4 class="text-xl font-semibold">Sanika Choughule</h4>
+        <p class="text-gray-400 mb-3">Full Stack Developer</p>
+        <div class="flex justify-center gap-4">
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-github-logo text-xl"></i></a>
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-linkedin-logo text-xl"></i></a>
+        </div>
+      </div>
+
+      <!-- Anushka Naik -->
+      <div class="team-card bg-gray-900 p-6 rounded-2xl text-center">
+        <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-pink-500 to-purple-600 mb-4 flex items-center justify-center text-4xl text-white">
+          AN
+        </div>
+        <h4 class="text-xl font-semibold">Anushka Naik</h4>
+        <p class="text-gray-400 mb-3">Assistant Developer</p>
+        <div class="flex justify-center gap-4">
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-github-logo text-xl"></i></a>
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-linkedin-logo text-xl"></i></a>
+        </div>
+      </div>
+
+      <!-- Gayatri Kulkarni -->
+      <div class="team-card bg-gray-900 p-6 rounded-2xl text-center">
+        <div class="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-pink-500 to-purple-600 mb-4 flex items-center justify-center text-4xl text-white">
+          GK
+        </div>
+        <h4 class="text-xl font-semibold">Gayatri Kulkarni</h4>
+        <p class="text-gray-400 mb-3">Assistant Developer</p>
+        <div class="flex justify-center gap-4">
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-github-logo text-xl"></i></a>
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-linkedin-logo text-xl"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20 max-w-4xl mx-auto px-6">
+    <h3 class="text-3xl font-bold text-center mb-4">Frequently Asked Questions</h3>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-14">Find answers to common questions about our AI disease prediction system</p>
+    
+    <!-- FAQ Tabs -->
+    <div class="flex space-x-2 mb-6 justify-center">
+      <button class="tab-button px-4 py-2 rounded-lg bg-gray-800 active" data-tab="general-faq">General</button>
+      <button class="tab-button px-4 py-2 rounded-lg bg-gray-800" data-tab="technical-faq">Technical</button>
+      <button class="tab-button px-4 py-2 rounded-lg bg-gray-800" data-tab="privacy-faq">Privacy</button>
+    </div>
+    
+    <!-- General FAQ -->
+    <div class="tab-content active" id="general-faq">
+      <div class="space-y-4">
+        <div class="bg-gray-800 p-5 rounded-xl">
+          <button class="flex justify-between w-full faq-btn items-center">
+            <span class="text-left font-medium">What is this project about?</span>
+            <i class="ph-caret-down text-xl transition-transform"></i>
+          </button>
+          <p class="text-gray-400 mt-3 hidden">Our project uses advanced AI and machine learning algorithms to analyze symptoms and predict potential diseases with high accuracy, helping users identify health issues early.</p>
+        </div>
+        <div class="bg-gray-800 p-5 rounded-xl">
+          <button class="flex justify-between w-full faq-btn items-center">
+            <span class="text-left font-medium">How accurate is the prediction system?</span>
+            <i class="ph-caret-down text-xl transition-transform"></i>
+          </button>
+          <p class="text-gray-400 mt-3 hidden">Our AI model has been trained on thousands of medical cases and achieves an accuracy rate of over 92% for common diseases. However, it's important to consult healthcare professionals for definitive diagnoses.</p>
+        </div>
+        <div class="bg-gray-800 p-5 rounded-xl">
+          <button class="flex justify-between w-full faq-btn items-center">
+            <span class="text-left font-medium">How can I try the demo?</span>
+            <i class="ph-caret-down text-xl transition-transform"></i>
+          </button>
+          <p class="text-gray-400 mt-3 hidden">You can try our interactive demo above by selecting symptoms and clicking the "Analyze Symptoms" button. The demo will show you how our AI system works and provides risk assessments.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Technical FAQ -->
+    <div class="tab-content" id="technical-faq">
+      <div class="space-y-4">
+        <div class="bg-gray-800 p-5 rounded-xl">
+          <button class="flex justify-between w-full faq-btn items-center">
+            <span class="text-left font-medium">What technologies are used in this project?</span>
+            <i class="ph-caret-down text-xl transition-transform"></i>
+          </button>
+          <p class="text-gray-400 mt-3 hidden">We use a combination of machine learning frameworks like TensorFlow and PyTorch for the AI model, Flask for the backend API, and modern web technologies (HTML5, CSS3, JavaScript) for the frontend.</p>
+        </div>
+        <div class="bg-gray-800 p-5 rounded-xl">
+          <button class="flex justify-between w-full faq-btn items-center">
+            <span class="text-left font-medium">How is the model trained?</span>
+            <i class="ph-caret-down text-xl transition-transform"></i>
+          </button>
+          <p class="text-gray-400 mt-3 hidden">Our model is trained on a diverse dataset of anonymized medical records, with features including symptoms, patient demographics, and diagnostic outcomes. We use transfer learning and continuous training to improve accuracy.</p>
+        </div>
+        <div class="bg-gray-800 p-5 rounded-xl">
+          <button class="flex justify-between w-full faq-btn items-center">
+            <span class="text-left font-medium">Can I contribute to the project?</span>
+            <i class="ph-caret-down text-xl transition-transform"></i>
+          </button>
+          <p class="text-gray-400 mt-3 hidden">Yes! We welcome contributions. Please visit our GitHub repository to see open issues, feature requests, and contribution guidelines.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Privacy FAQ -->
+    <div class="tab-content" id="privacy-faq">
+      <div class="space-y-4">
+        <div class="bg-gray-800 p-5 rounded-xl">
+          <button class="flex justify-between w-full faq-btn items-center">
+            <span class="text-left font-medium">Is my health data secure?</span>
+            <i class="ph-caret-down text-xl transition-transform"></i>
+          </button>
+          <p class="text-gray-400 mt-3 hidden">Yes, we take data privacy very seriously. All health data is encrypted, and we comply with healthcare data protection regulations. Your information is never shared with third parties without consent.</p>
+        </div>
+        <div class="bg-gray-800 p-5 rounded-xl">
+          <button class="flex justify-between w-full faq-btn items-center">
+            <span class="text-left font-medium">What data do you collect?</span>
+            <i class="ph-caret-down text-xl transition-transform"></i>
+          </button>
+          <p class="text-gray-400 mt-3 hidden">We only collect the minimum necessary information to provide accurate predictions. This includes symptoms you input, but we don't store personally identifiable information unless you create an account and explicitly consent.</p>
+        </div>
+        <div class="bg-gray-800 p-5 rounded-xl">
+          <button class="flex justify-between w-full faq-btn items-center">
+            <span class="text-left font-medium">How is my data used?</span>
+            <i class="ph-caret-down text-xl transition-transform"></i>
+          </button>
+          <p class="text-gray-400 mt-3 hidden">Your data is used solely for the purpose of generating disease predictions. Anonymized data may be used to improve our models, but we never sell or share your personal information with third parties.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-20 bg-gray-900/40">
+    <h3 class="text-3xl font-bold text-center mb-4">Contact Us</h3>
+    <p class="text-gray-400 text-center max-w-2xl mx-auto mb-14">Have questions or want to collaborate? Get in touch with our team</p>
+    
+    <form class="max-w-2xl mx-auto space-y-6 px-6">
+      <input type="text" placeholder="Your Name" class="w-full p-4 bg-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500">
+      <input type="email" placeholder="Your Email" class="w-full p-4 bg-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500">
+      <textarea placeholder="Your Message" rows="5" class="w-full p-4 bg-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+      <button class="px-6 py-3 bg-pink-600 hover:bg-pink-500 rounded-xl w-full transition-colors">Send Message</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center py-8 text-gray-500 text-sm border-t border-gray-800">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+        <div class="text-pink-500 font-bold text-xl mb-4 md:mb-0">
+          <i class="ph-brain text-pink-500 mr-2"></i>
+        </div>
+        <div class="flex space-x-6">
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-github-logo text-xl"></i></a>
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-linkedin-logo text-xl"></i></a>
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-twitter-logo text-xl"></i></a>
+          <a href="#" class="hover:text-pink-400 transition-colors"><i class="ph-instagram-logo text-xl"></i></a>
+        </div>
+      </div>
+      <p>© 2025 Quantum Coder. All rights reserved. | AI Disease Prediction Hackathon Project</p>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu functionality
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target) && !mobileMenu.classList.contains('hidden')) {
+        mobileMenu.classList.add('hidden');
+      }
+    });
+
+    // FAQ functionality
+    document.querySelectorAll('.faq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        content.classList.toggle('hidden');
+        btn.querySelector('i').classList.toggle('rotate-180');
+      });
+    });
+
+    // Tab functionality
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons in the same tab group
+        const tabGroup = button.closest('.flex');
+        tabGroup.querySelectorAll('.tab-button').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        // Hide all tab contents in this section
+        const section = button.closest('section');
+        const tabName = button.getAttribute('data-tab');
+        section.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        
+        // Show the selected tab content
+        document.getElementById(tabName).classList.add('active');
+      });
+    });
+
+    // Demo functionality
+    const symptomPills = document.querySelectorAll('.symptom-pill');
+    const predictBtn = document.getElementById('predictBtn');
+    const predictionCircle = document.getElementById('predictionCircle');
+    const probabilityText = document.getElementById('probabilityText');
+    const diseaseText = document.getElementById('diseaseText');
+    const recommendationBox = document.getElementById('recommendationBox');
+    const recommendationText = document.getElementById('recommendationText');
+
+    // Toggle symptom selection
+    symptomPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pill.classList.toggle('active');
+      });
+    });
+
+    // Handle prediction
+    predictBtn.addEventListener('click', () => {
+      // Count selected symptoms
+      const selectedSymptoms = document.querySelectorAll('.symptom-pill.active');
+      
+      if (selectedSymptoms.length === 0) {
+        alert('Please select at least one symptom');
+        return;
+      }
+      
+      // Simulate prediction
+      simulatePrediction(selectedSymptoms);
+    });
+
+    // Simulate prediction
+    function simulatePrediction(selectedSymptoms) {
+      // Show loading state
+      predictBtn.textContent = 'Analyzing...';
+      predictBtn.disabled = true;
+      
+      // Simulate API call delay
+      setTimeout(() => {
+        // Random disease for demo
+        const diseases = [
+          { name: 'Common Cold', probability: 65, recommendation: 'Rest, hydrate, and consider over-the-counter cold medicine.' },
+          { name: 'Influenza', probability: 72, recommendation: 'Get plenty of rest, stay hydrated, and consider antiviral medication if early in symptoms.' },
+          { name: 'COVID-19', probability: 85, recommendation: 'Isolate yourself, get tested, and consult a healthcare provider for guidance.' },
+          { name: 'Allergies', probability: 58, recommendation: 'Try antihistamines and avoid known allergens.' },
+          { name: 'Strep Throat', probability: 45, recommendation: 'Consult a doctor for a throat culture and possible antibiotics.' }
+        ];
+        
+        const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
+        
+        // Update UI with prediction
+        predictionCircle.style.background = `conic-gradient(#db2777 ${randomDisease.probability}%, #1f2937 0%)`;
+        probabilityText.textContent = `${randomDisease.probability}%`;
+        diseaseText.textContent = randomDisease.name;
+        recommendationText.textContent = randomDisease.recommendation;
+        recommendationBox.classList.remove('hidden');
+        
+        // Reset button
+        predictBtn.textContent = 'Analyze Symptoms';
+        predictBtn.disabled = false;
+      }, 1500);
+    }
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          // Close mobile menu if open
+          if (!mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+          }
+          
+          // Scroll to element
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
 </html>
